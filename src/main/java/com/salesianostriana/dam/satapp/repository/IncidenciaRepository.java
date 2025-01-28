@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.satapp.repository;
 
+import com.salesianostriana.dam.satapp.model.Estado;
 import com.salesianostriana.dam.satapp.model.Incidencia;
 import com.salesianostriana.dam.satapp.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,7 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
             SELECT in
             FROM Incidencia in
             WHERE in.usuario = :usuario
+            AND in.estado != :estado
             """)
-    List<Incidencia> findByUsuario(@Param("usuario") Usuario usuario);
+    List<Incidencia> findByUsuario(@Param("usuario") Usuario usuario, @Param("estado")Estado estado);
 }
