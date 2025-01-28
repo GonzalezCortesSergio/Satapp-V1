@@ -30,7 +30,7 @@ public class IncidenciaController {
 
 
     @GetMapping("/usuario/{idUsuario}")
-    @Operation(summary = "Se buscan todas las incidencias abiertas por un usuario")
+    @Operation(summary = "Se buscan todas las incidencias abiertas por un usuario que no estén en estado CERRADA")
     @ApiResponses(
             value = {
                     @ApiResponse(
