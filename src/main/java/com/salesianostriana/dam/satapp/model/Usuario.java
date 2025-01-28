@@ -33,7 +33,7 @@ public class Usuario {
 
     private String email;
 
-    private boolean role;
+    private String role;
 
 
     @Override

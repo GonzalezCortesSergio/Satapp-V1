@@ -21,4 +21,6 @@ public class Alumno extends Usuario{
     @OneToMany
     private List<HistoricoCurso> listaHistoricoCurso;
 
+
+
 }
