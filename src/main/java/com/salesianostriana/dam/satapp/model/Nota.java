@@ -25,6 +25,9 @@ public class Nota {
     private String autor;
 
     @ManyToOne
+    @JoinColumn(
+            foreignKey = @ForeignKey(name = "fk_nota_incidencia")
+    )
     @Id
     private Incidencia incidencia;
 

@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.satapp.model;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
@@ -18,6 +19,7 @@ import java.util.Set;
 @SuperBuilder
 @Getter
 @Setter
+@DiscriminatorValue(value = "tecnico")
 public class Tecnico extends Usuario{
 
     @ManyToMany(mappedBy = "tecnicosGestionan", fetch = FetchType.EAGER)

@@ -19,4 +19,15 @@ public class GlobalErrorController extends ResponseEntityExceptionHandler {
 
         return detail;
     }
+
+
+    @ExceptionHandler(UsuarioNotFoundException.class)
+    public ProblemDetail handleUsuarioNotFoundException(UsuarioNotFoundException exception) {
+
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+
+        detail.setTitle("Usuario no encontrado");
+
+        return detail;
+    }
 }

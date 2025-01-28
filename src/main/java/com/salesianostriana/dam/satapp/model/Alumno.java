@@ -1,13 +1,10 @@
 package com.salesianostriana.dam.satapp.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -16,9 +13,16 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @Setter
+@DiscriminatorValue(value = "alumno")
 public class Alumno extends Usuario{
 
-    @OneToMany
-    private List<HistoricoCurso> listaHistoricoCurso;
+    @OneToMany(
+            mappedBy = "alumno",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL
+    )
+    @Builder.Default
+    @Setter(AccessLevel.NONE)
+    private List<HistoricoCurso> listaHistoricoCurso = new ArrayList<>();
 
 }

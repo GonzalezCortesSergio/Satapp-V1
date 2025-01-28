@@ -57,12 +57,20 @@ public class Incidencia {
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
+    @Setter(AccessLevel.NONE)
+    @Builder.Default
     private List<Nota> listaNotas = new ArrayList<>();
 
     @ManyToOne
+    @JoinColumn(
+            foreignKey = @ForeignKey(name = "fk_incidencia_equipo")
+    )
     private Equipo equipo;
 
     @ManyToOne
+    @JoinColumn(
+            foreignKey = @ForeignKey(name = "fk_incidencia_ubicacion")
+    )
     private Ubicacion ubicacion;
 
 

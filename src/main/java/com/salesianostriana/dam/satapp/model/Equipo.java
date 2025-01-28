@@ -1,9 +1,6 @@
 package com.salesianostriana.dam.satapp.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -26,6 +23,9 @@ public class Equipo {
     private String catacteristicas;
 
     @ManyToOne
+    @JoinColumn(
+            foreignKey = @ForeignKey(name = "fk_equipo_ubicacion")
+    )
     private Ubicacion ubicacion;
 
     @Override

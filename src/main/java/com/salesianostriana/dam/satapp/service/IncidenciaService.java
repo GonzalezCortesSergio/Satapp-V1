@@ -1,5 +1,7 @@
 package com.salesianostriana.dam.satapp.service;
 
+import com.salesianostriana.dam.satapp.error.IncidenciaNotFoundException;
+import com.salesianostriana.dam.satapp.error.UsuarioNotFoundException;
 import com.salesianostriana.dam.satapp.model.Incidencia;
 import com.salesianostriana.dam.satapp.model.Usuario;
 import com.salesianostriana.dam.satapp.repository.IncidenciaRepository;
@@ -20,8 +22,15 @@ public class IncidenciaService {
     public List<Incidencia> findByUsuario(Long idUsuario) {
 
         Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow();
+                .orElseThrow(
+                        () -> new UsuarioNotFoundException("No se ha encontrado un usuario con el ID: %d".formatted(idUsuario))
+                );
 
-        return incidenciaRepository.findByUsuario(usuario);
+        List<Incidencia> result = incidenciaRepository.findByUsuario(usuario);
+
+        if(result.isEmpty())
+            throw new IncidenciaNotFoundException("No se han encontrado incidencias");
+
+        return result;
     }
 }

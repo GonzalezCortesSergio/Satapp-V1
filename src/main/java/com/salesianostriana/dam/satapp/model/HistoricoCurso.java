@@ -1,9 +1,6 @@
 package com.salesianostriana.dam.satapp.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 @NoArgsConstructor
@@ -12,11 +9,16 @@ import lombok.*;
 @Setter
 @Entity
 @Builder
+@IdClass(HistoricoCursoPK.class)
 public class HistoricoCurso {
 
     @Id
+    @GeneratedValue
+    private Long id;
+    @Id
     @ManyToOne
-    @JoinColumn(name = "alumno_id")
+    @JoinColumn(name = "alumno_id",
+    foreignKey = @ForeignKey(name = "fk_historico_curso_alumno"))
     private Alumno alumno;
 
     private String curso;

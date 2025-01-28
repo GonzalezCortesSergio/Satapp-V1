@@ -26,9 +26,13 @@ public class Categoria {
             mappedBy = "categoriaPadre",
             fetch = FetchType.EAGER
     )
+    @Setter(AccessLevel.NONE)
     private List<Categoria> categoriasHijas = new ArrayList<>();
 
     @ManyToOne
+    @JoinColumn(
+            foreignKey = @ForeignKey(name = "fk_categoria_categoria_padre")
+    )
     private Categoria categoriaPadre;
 
     @Override
