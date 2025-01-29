@@ -92,6 +92,63 @@ public class IncidenciaController {
 
     @GetMapping("/usuario/{idUsuario}/detalles/{idIncidencia}")
     @Operation(summary = "Se muestran los detalles de una incidencia seleccionada por el usuario")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se muestran los datos de la incidencia correctamente",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetIncidenciaDetailsDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "fecha": "2025-01-28",
+                                                                            "titulo": "Ordenador ardiendo",
+                                                                            "descripcion": "No sé, el ordenador está ardiendo, socorro ayuda ya porfavor",
+                                                                            "estado": "ABIERTA",
+                                                                            "urgencia": 5,
+                                                                            "categoria": "Ordenadores",
+                                                                            "notas": [],
+                                                                            "equipo": null,
+                                                                            "ubicacion": {
+                                                                                "id": 1,
+                                                                                "nombre": "Aula 1"
+                                                                            }
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se ha encontrado la incidencia",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Incidencia no encontrada",
+                                                                            "status": 404,
+                                                                            "detail": "No se ha encontrado una incidencia con el ID: 1 para el usuario con ID: 2",
+                                                                            "instance": "/api/incidencia/usuario/2/detalles/1"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
     public GetIncidenciaDetailsDto findIncidenciaByUsuarioAndId(@PathVariable Long idUsuario, @PathVariable Long idIncidencia) {
 
         return GetIncidenciaDetailsDto.of(incidenciaService.findByIdAndUsuario(idUsuario, idIncidencia));
