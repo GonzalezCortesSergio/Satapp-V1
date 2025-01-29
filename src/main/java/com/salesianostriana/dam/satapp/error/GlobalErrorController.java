@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class GlobalErrorController extends ResponseEntityExceptionHandler {
 
+    //errores incidencias
     @ExceptionHandler(IncidenciaNotFoundException.class)
     public ProblemDetail handleIncidenciaNotFoundException(IncidenciaNotFoundException exception) {
 
@@ -20,13 +21,28 @@ public class GlobalErrorController extends ResponseEntityExceptionHandler {
         return detail;
     }
 
-
+    //errores ususario
     @ExceptionHandler(UsuarioNotFoundException.class)
     public ProblemDetail handleUsuarioNotFoundException(UsuarioNotFoundException exception) {
 
         ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
-
         detail.setTitle("Usuario no encontrado");
+
+        return detail;
+    }
+
+    @ExceptionHandler(PasPermisoDenegadoException.class)
+    public ProblemDetail handlePasPermisoDenegadoException(PasPermisoDenegadoException exception){
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, exception.getMessage());
+        detail.setTitle("Pas permiso no concedido");
+
+        return detail;
+    }
+
+    @ExceptionHandler(TipoUsusarioNoPermitidoException.class)
+    public ProblemDetail handleTipoUsusarioNoPermitidoException(TipoUsusarioNoPermitidoException exception){
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
+        detail.setTitle("Tipo usuario no permitido");
 
         return detail;
     }
