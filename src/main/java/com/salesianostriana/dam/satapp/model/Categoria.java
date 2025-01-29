@@ -24,7 +24,7 @@ public class Categoria {
 
     @OneToMany(
             mappedBy = "categoriaPadre",
-            fetch = FetchType.EAGER
+            fetch = FetchType.LAZY
     )
     @Setter(AccessLevel.NONE)
     private List<Categoria> categoriasHijas = new ArrayList<>();

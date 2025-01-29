@@ -18,7 +18,7 @@ public class Alumno extends Usuario{
 
     @OneToMany(
             mappedBy = "alumno",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
     @Builder.Default

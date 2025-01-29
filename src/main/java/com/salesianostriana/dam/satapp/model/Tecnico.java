@@ -20,7 +20,7 @@ import java.util.Set;
 @DiscriminatorValue(value = "tecnico")
 public class Tecnico extends Usuario{
 
-    @ManyToMany(mappedBy = "tecnicosGestionan", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "tecnicosGestionan", fetch = FetchType.LAZY)
     @Builder.Default
     @Setter(AccessLevel.NONE)
     private Set<Incidencia> incidenciasGestiona = new HashSet<>();
