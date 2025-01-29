@@ -4,12 +4,10 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +20,8 @@ import java.util.Set;
 @DiscriminatorValue(value = "tecnico")
 public class Tecnico extends Usuario{
 
-    @ManyToMany(mappedBy = "tecnicosGestionan", fetch = FetchType.EAGER)
-    private Set<Incidencia> incidenciasGestiona;
+    @ManyToMany(mappedBy = "tecnicosGestionan", fetch = FetchType.LAZY)
+    @Builder.Default
+    @Setter(AccessLevel.NONE)
+    private Set<Incidencia> incidenciasGestiona = new HashSet<>();
 }

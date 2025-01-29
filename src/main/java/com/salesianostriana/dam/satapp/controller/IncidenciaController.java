@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.satapp.controller;
 
+import com.salesianostriana.dam.satapp.dto.GetIncidenciaDetailsDto;
 import com.salesianostriana.dam.satapp.dto.GetIncidenciaDto;
 import com.salesianostriana.dam.satapp.service.IncidenciaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,29 +60,6 @@ public class IncidenciaController {
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "No se ha encontrado el usuario",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            schema = @Schema(implementation = ProblemDetail.class),
-                                            examples = {
-                                                    @ExampleObject(
-                                                            value = """
-                                                                        {
-                                                                            "type": "about:blank",
-                                                                            "title": Usuario no encontrado",
-                                                                            "status": 404,
-                                                                            "detail": No se ha encontrado un usuario con el ID: 2",
-                                                                            "instance": "/api/incidencia/usuario/2"
-                                                                        }
-                                                                    """
-                                                    )
-                                            }
-                                    )
-                            }
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
                             description = "No se han encontrado incidencias",
                             content = {
                                     @Content(
@@ -94,7 +72,7 @@ public class IncidenciaController {
                                                                             "type": "about:blank",
                                                                             "title": "Incidencia no encontrada",
                                                                             "status": 404,
-                                                                            "detail": "No se han encontrado incidencias",
+                                                                            "detail": "No se han encontrado incidencias para el usuario con ID: 3",
                                                                             "instance": "/api/incidencia/usuario/3"
                                                                         }
                                                                     """
@@ -107,9 +85,16 @@ public class IncidenciaController {
     )
     public List<GetIncidenciaDto> findIncidenciasByUsuario(@PathVariable Long idUsuario) {
 
-        return incidenciaService.findByUsuario(idUsuario).stream()
+        return incidenciaService.findAllByUsuario(idUsuario).stream()
                 .map(GetIncidenciaDto::of)
                 .toList();
+    }
+
+    @GetMapping("/usuario/{idUsuario}/detalles/{idIncidencia}")
+    @Operation(summary = "Se muestran los detalles de una incidencia seleccionada por el usuario")
+    public GetIncidenciaDetailsDto findIncidenciaByUsuarioAndId(@PathVariable Long idUsuario, @PathVariable Long idIncidencia) {
+
+        return GetIncidenciaDetailsDto.of(incidenciaService.findByIdAndUsuario(idUsuario, idIncidencia));
     }
 
 }
