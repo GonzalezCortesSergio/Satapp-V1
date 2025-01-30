@@ -64,5 +64,16 @@ public class UsuarioService {
 
     }
 
+    public List<Usuario> findAll(){
+
+        List<Usuario> result = usuarioRepository.findAll();
+
+        if (result.isEmpty()){
+            throw new UsuarioNotFoundException("");
+        }
+
+        return result;
+
+    }
 
 }
