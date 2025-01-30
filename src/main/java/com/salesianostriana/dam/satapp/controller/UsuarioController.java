@@ -143,7 +143,7 @@ public class UsuarioController {
                             }
                     ),
                     @ApiResponse(
-                            responseCode = "201",
+                            responseCode = "200",
                             description = "Se ha editado el usuario",
                             content = {
                                     @Content(
