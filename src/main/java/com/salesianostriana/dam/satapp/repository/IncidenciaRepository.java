@@ -27,4 +27,15 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
             AND i.id = :idIncidencia
             """)
     Optional<Incidencia> findByUsuarioAndIdFetch(Long idUsuario, Long idIncidencia);
+
+
+    @Query("""
+            SELECT i
+            FROM Incidencia i
+            LEFT JOIN fetch i.tecnicosGestionan
+            WHERE i.usuario.id = :idUsuario
+            AND i.id = :idIncidencia
+            AND i.estado IN ('ABIERTA', 'PENDIENTE')
+            """)
+    Optional<Incidencia> findByUsuarioAndIdAbiertaOrPendiente(Long idUsuario, Long idIncidencia);
 }
