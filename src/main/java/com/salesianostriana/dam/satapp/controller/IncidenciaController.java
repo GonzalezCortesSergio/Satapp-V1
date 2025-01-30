@@ -230,4 +230,5 @@ public class IncidenciaController {
         return GetIncidenciaDetailsDto.of(incidenciaService.edit(idIncidencia, usuarioId, incidenciaDto));
     }
 
+
 }
