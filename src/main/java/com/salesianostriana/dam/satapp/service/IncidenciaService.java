@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.satapp.service;
 
+import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotFoundException;
 import com.salesianostriana.dam.satapp.model.Estado;
 import com.salesianostriana.dam.satapp.model.Incidencia;
@@ -32,5 +33,17 @@ public class IncidenciaService {
                 .orElseThrow(
                         () -> new IncidenciaNotFoundException("No se ha encontrado una incidencia con el ID: %d para el usuario con ID: %d".formatted(idIncidencia, idUsuario))
                 );
+    }
+
+    public Incidencia edit(Long idIncidencia, Long idUsuario, EditIncidenciaDto editIncidenciaDto) {
+
+        Incidencia antigua = incidenciaRepository.findByUsuarioAndIdAbiertaOrPendiente(idUsuario, idIncidencia)
+                        .orElseThrow(
+                                () -> new IncidenciaNotFoundException("No se ha encontrado una incidencia ABIERTA o PENDIENTE con el ID: %d para el usuario con ID: %d".formatted(idIncidencia, idUsuario))
+                        );
+
+        antigua.setDescripcion(editIncidenciaDto.descripcion());
+
+        return antigua;
     }
 }

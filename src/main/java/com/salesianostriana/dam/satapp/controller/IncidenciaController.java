@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.satapp.controller;
 
+import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
 import com.salesianostriana.dam.satapp.dto.GetIncidenciaDetailsDto;
 import com.salesianostriana.dam.satapp.dto.GetIncidenciaDto;
 import com.salesianostriana.dam.satapp.service.IncidenciaService;
@@ -13,10 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ProblemDetail;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -152,6 +150,84 @@ public class IncidenciaController {
     public GetIncidenciaDetailsDto findIncidenciaByUsuarioAndId(@PathVariable Long idUsuario, @PathVariable Long idIncidencia) {
 
         return GetIncidenciaDetailsDto.of(incidenciaService.findByIdAndUsuario(idUsuario, idIncidencia));
+    }
+
+    @PutMapping("/usuario/{usuarioId}/editar/{idIncidencia}")
+    @Operation(summary = "Un usuario edita la descripción de una incidencia que esté ABIERTA o PENDIENTE")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se ha editado la descripción correctamente",
+
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetIncidenciaDetailsDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "fecha": "2025-01-28",
+                                                                            "titulo": "Ordenador ardiendo",
+                                                                            "descripcion": "Estaba fumando y tiré una colilla al ordenador pensando que no ardería y salió ardiendo, socorro",
+                                                                            "estado": "ABIERTA",
+                                                                            "urgencia": 5,
+                                                                            "categoria": "Ordenadores",
+                                                                            "notas": [],
+                                                                            "equipo": null,
+                                                                            "ubicacion": {
+                                                                                "id": 1,
+                                                                                "nombre": "Aula 1"
+                                                                            }
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+
+
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se ha encontrado la incidencia, por lo que no se ha podido editar",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Incidencia no encontrada",
+                                                                            "status": 404,
+                                                                            "detail": "No se ha encontrado una incidencia ABIERTA o PENDIENTE con el ID: 2 para el usuario con ID: 1",
+                                                                            "instance": "/api/incidencia/usuario/1/editar/2"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public GetIncidenciaDetailsDto editIncidencia(@PathVariable Long usuarioId, @PathVariable Long idIncidencia,
+                                                  @Schema(
+                                                          description = "Descripción a añadir",
+                                                          implementation = EditIncidenciaDto.class,
+                                                          examples = {
+                                                                  """
+                                                                                    {
+                                                                                        "descripcion": "Estaba fumando y tiré una colilla al ordenador pensando que no ardería y salió ardiendo, socorro"
+                                                                                    }
+                                                                                  """
+                                                          }
+                                                  )@RequestBody EditIncidenciaDto incidenciaDto) {
+
+        return GetIncidenciaDetailsDto.of(incidenciaService.edit(idIncidencia, usuarioId, incidenciaDto));
     }
 
 }
