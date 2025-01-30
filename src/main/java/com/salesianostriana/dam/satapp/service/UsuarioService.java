@@ -45,4 +45,24 @@ public class UsuarioService {
 
     }
 
+    public Usuario editarUsuario(Long idAdmin, CreateUsuarioDto createUsuarioDto, Long id){
+
+        if (usuarioRepository.findByIdPas(idAdmin, Tipo.PAS).isEmpty()){
+            throw new PasPermisoDenegadoException("No se ha encontrado un usuario PAS con el id: %d".formatted(id));
+        }
+
+        return usuarioRepository.findById(id)
+                .map(old -> {
+                    old.setNombre(createUsuarioDto.nombre());
+                    old.setUsername(createUsuarioDto.username());
+                    old.setPassword(createUsuarioDto.password());
+                    old.setEmail(createUsuarioDto.email());
+                    old.setRole(createUsuarioDto.role());
+                    return usuarioRepository.save(old);
+                })
+                .orElseThrow(() -> new UsuarioNotFoundException("No se ha encontrado ningun usuario con la id:  %d".formatted(id)));
+
+    }
+
+
 }
