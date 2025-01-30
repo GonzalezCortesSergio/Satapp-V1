@@ -113,4 +113,86 @@ public class UsuarioController {
                         usuarioService.crearUsuario(idAdmin, createUsuarioDto, tipoUsuario, tipoPersonal));
     }
 
+    @PutMapping("/admin/{idAdmin}/editar/{id}")
+    @Operation(summary = "Un usuario PAS edita otros usuarios")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "El usuario no tiene permiso para editar otro usuario",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        [
+                                                                            {
+                                                                                "type": "about:blank",
+                                                                                    "title": "Pas permiso no concedido",
+                                                                                    "status": 401,
+                                                                                    "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                                    "instance": "/api/usuario/admin/2/editar/2"
+                                                                            }
+                                                                        ]
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se ha editado el usuario",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = Usuario.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "id": 2,
+                                                                            "nombre": "lucas",
+                                                                            "username": "mariaA",
+                                                                            "password": "1234",
+                                                                            "email": "a@a",
+                                                                            "role": "noAdmin",
+                                                                            "listaHistoricoCurso": []
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Usuario no encontrado",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Usuario no encontrado",
+                                                                            "status": 404,
+                                                                            "detail": "No se ha encontrado ningun usuario con la id:  3",
+                                                                            "instance": "/api/usuario/admin/1/editar/3"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public Usuario ediarPas(@PathVariable Long idAdmin, @RequestBody CreateUsuarioDto createUsuarioDto, @PathVariable Long id){
+        return usuarioService.editarUsuario(idAdmin, createUsuarioDto,id);
+    }
 }
