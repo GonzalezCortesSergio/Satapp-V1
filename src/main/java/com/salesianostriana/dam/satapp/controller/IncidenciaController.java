@@ -236,7 +236,7 @@ public class IncidenciaController {
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "201",
+                            responseCode = "204",
                             description = "Se ha borrado la incidencia correctamente",
                             content = @Content()
                     ),
