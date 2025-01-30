@@ -21,7 +21,7 @@ public class UsuarioService {
 
     public Usuario crearUsuario(Long id, CreateUsuarioDto createUsuarioDto, String tipoUsuario, String tipoPersonal){
 
-        if (usuarioRepository.findByIdPas(id, Tipo.PAS).isEmpty()){
+        if (usuarioRepository.findByIdPas(id).isEmpty()){
             throw new PasPermisoDenegadoException("No se ha encontrado un usuario PAS con el id: %d".formatted(id));
         }
 
@@ -47,7 +47,7 @@ public class UsuarioService {
 
     public Usuario editarUsuario(Long idAdmin, CreateUsuarioDto createUsuarioDto, Long id){
 
-        if (usuarioRepository.findByIdPas(idAdmin, Tipo.PAS).isEmpty()){
+        if (usuarioRepository.findByIdPas(idAdmin).isEmpty()){
             throw new PasPermisoDenegadoException("No se ha encontrado un usuario PAS con el id: %d".formatted(id));
         }
 

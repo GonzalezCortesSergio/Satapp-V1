@@ -16,8 +16,17 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
             from Usuario u
             where u.id = :idUsuario
             and type(u) = 'personal'
-            and u.tipo = :tipo
+            and u.tipo = 'PAS'
             """)
-    Optional<Personal> findByIdPas(@Param("idUsuario") Long id, @Param("tipo") Tipo tipo);
+    Optional<Personal> findByIdPas(@Param("idUsuario") Long id);
+
+    @Query("""
+            select u
+            from Usuario u
+            where u.id = :idUsuario
+            or (type(u) = 'personal'
+            and u.tipo = 'PAS')
+            """)
+    Optional<Usuario> findByIdPropio(@Param("idUsuario") Long id);
 
 }
