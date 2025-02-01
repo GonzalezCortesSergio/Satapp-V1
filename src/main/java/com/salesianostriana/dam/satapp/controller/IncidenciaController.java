@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -229,5 +230,67 @@ public class IncidenciaController {
 
         return GetIncidenciaDetailsDto.of(incidenciaService.edit(idIncidencia, usuarioId, incidenciaDto));
     }
+
+    @DeleteMapping("/usuario/{idUsuario}/borrar/{idIncidencia}")
+    @Operation(summary = "Se borra la incidencia de un usuario que se encuentra abierta")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Se ha borrado la incidencia correctamente",
+                            content = @Content()
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se ha encontrado una incidencia",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ProblemDetail.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                                {
+                                                                    "type": "about:blank",
+                                                                    "title": "Incidencia no encontrada",
+                                                                    "status": 404,
+                                                                    "detail": "No se ha encontrado una incidencia con el ID: 2 para el usuario con ID: 1",
+                                                                    "instance": "/api/incidencia/usuario/1/borrar/2"
+                                                                }
+                                                            """
+                                            )
+                                    }
+                            )
+
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "La incidencia a borrar no está abierta",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ProblemDetail.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                                {
+                                                                    "type": "about:blank",
+                                                                    "title": "Incidencia no abierta",
+                                                                    "status": 400,
+                                                                    "detail": "La incidencia que intentas borrar no está abierta",
+                                                                    "instance": "/api/incidencia/usuario/1/borrar/1"
+                                                                }
+                                                            """
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<?> deleteByIdIncidenciaAbierta(@PathVariable Long idUsuario, @PathVariable Long idIncidencia) {
+
+        incidenciaService.deleteById(idUsuario, idIncidencia);
+
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

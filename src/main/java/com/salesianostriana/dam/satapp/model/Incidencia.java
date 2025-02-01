@@ -55,7 +55,8 @@ public class Incidencia {
     @OneToMany(
             mappedBy = "incidencia",
             fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     @Setter(AccessLevel.NONE)
     @Builder.Default

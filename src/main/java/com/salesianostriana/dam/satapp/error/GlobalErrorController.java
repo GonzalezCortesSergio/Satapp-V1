@@ -21,6 +21,16 @@ public class GlobalErrorController extends ResponseEntityExceptionHandler {
         return detail;
     }
 
+    @ExceptionHandler(IncidenciaNotAbiertaException.class)
+    public ProblemDetail handleIncidenciaNotAbiertaException(IncidenciaNotAbiertaException exception) {
+
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+                exception.getMessage());
+        detail.setTitle("Incidencia no abierta");
+
+        return detail;
+    }
+
     //errores ususario
     @ExceptionHandler(UsuarioNotFoundException.class)
     public ProblemDetail handleUsuarioNotFoundException(UsuarioNotFoundException exception) {
