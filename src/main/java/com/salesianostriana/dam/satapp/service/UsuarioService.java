@@ -4,6 +4,7 @@ import com.salesianostriana.dam.satapp.dto.CreateUsuarioDto;
 import com.salesianostriana.dam.satapp.error.PasPermisoDenegadoException;
 import com.salesianostriana.dam.satapp.error.TipoUsusarioNoPermitidoException;
 import com.salesianostriana.dam.satapp.error.UsuarioNotFoundException;
+import com.salesianostriana.dam.satapp.error.UsuarioPermisoDenegadoException;
 import com.salesianostriana.dam.satapp.model.Personal;
 import com.salesianostriana.dam.satapp.model.Tipo;
 import com.salesianostriana.dam.satapp.model.Usuario;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -64,16 +66,40 @@ public class UsuarioService {
 
     }
 
-    public List<Usuario> findAll(){
+    public List<Usuario> findAll(Long idAdmin) {
+
+        if (usuarioRepository.findByIdPas(idAdmin).isEmpty()){
+            throw new PasPermisoDenegadoException("No se ha encontrado un usuario PAS con el id: %d".formatted(idAdmin));
+        }
 
         List<Usuario> result = usuarioRepository.findAll();
 
-        if (result.isEmpty()){
-            throw new UsuarioNotFoundException("");
+        if (result.isEmpty()) {
+            throw new UsuarioNotFoundException("No se encontraron usuarios");
         }
 
         return result;
-
     }
+
+    public Optional<Usuario> findById(Long id, Long idUsuario) {
+
+        Optional<Usuario> usuarioBuscado = usuarioRepository.findById(id);
+
+        if (usuarioBuscado.isEmpty()) {
+            throw new UsuarioNotFoundException("No hay usuario con la id: %d".formatted(id));
+        }
+
+        Optional<Usuario> result = usuarioRepository.findByIdPropio(id, idUsuario);
+
+        if (result.isEmpty()) {
+            throw new UsuarioPermisoDenegadoException("No tiene permiso para ver este usuario.");
+        }
+
+        return result;
+    }
+
+
+
+
 
 }
