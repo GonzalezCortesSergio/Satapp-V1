@@ -10,4 +10,4 @@ INSERT INTO ubicacion(id, nombre) VALUES(1, 'Aula 1');
 
 ALTER SEQUENCE ubicacion_seq RESTART WITH 51;
 
-INSERT INTO incidencia(id, fecha, titulo, descripcion, estado, urgencia, usuario_id, categoria_id, ubicacion_id) VALUES (1, '2025-01-28', 'Ordenador ardiendo', 'No sé, el ordenador está ardiendo socorro ayuda ya porfavor', 'ABIERTA', 5, 1, 1, 1);
+INSERT INTO incidencia(id, fecha, titulo, descripcion, estado, urgencia, usuario_id, categoria_id, ubicacion_id) VALUES (1, '2025-01-28', 'Ordenador ardiendo', 'No sé, el ordenador está ardiendo socorro ayuda ya porfavor', 'TRABAJANDO', 5, 1, 1, 1);

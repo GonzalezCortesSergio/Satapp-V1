@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.satapp.service;
 
 import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
+import com.salesianostriana.dam.satapp.error.IncidenciaNotAbiertaException;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotFoundException;
 import com.salesianostriana.dam.satapp.model.Estado;
 import com.salesianostriana.dam.satapp.model.Incidencia;
@@ -22,7 +23,7 @@ public class IncidenciaService {
         List<Incidencia> result = incidenciaRepository.findAllByUsuario(idUsuario, Estado.CERRADA);
 
         if(result.isEmpty())
-            throw new IncidenciaNotFoundException("No se han encontrado incidencias para el usuario con ID: %d".formatted(idUsuario));
+            throw new IncidenciaNotFoundException(idUsuario);
 
         return result;
     }
@@ -31,7 +32,7 @@ public class IncidenciaService {
 
         return incidenciaRepository.findByUsuarioAndIdFetch(idUsuario, idIncidencia)
                 .orElseThrow(
-                        () -> new IncidenciaNotFoundException("No se ha encontrado una incidencia con el ID: %d para el usuario con ID: %d".formatted(idIncidencia, idUsuario))
+                        () -> new IncidenciaNotFoundException(idUsuario, idIncidencia)
                 );
     }
 
@@ -45,5 +46,18 @@ public class IncidenciaService {
         antigua.setDescripcion(editIncidenciaDto.descripcion());
 
         return antigua;
+    }
+
+    public void deleteById(Long idUsuario, Long idIncidencia) {
+
+        Incidencia incidencia = findByIdAndUsuario(idUsuario, idIncidencia);
+
+        if(!incidencia.getEstado().toString().equals("ABIERTA"))
+            throw new IncidenciaNotAbiertaException();
+
+        incidencia.setUsuario(null);
+        incidencia.setUbicacion(null);
+
+        incidenciaRepository.deleteById(idIncidencia);
     }
 }
