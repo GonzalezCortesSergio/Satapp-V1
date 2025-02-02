@@ -56,4 +56,12 @@ public class GlobalErrorController extends ResponseEntityExceptionHandler {
 
         return detail;
     }
+
+    @ExceptionHandler(UsuarioPermisoDenegadoException.class)
+    public ProblemDetail handleUsuarioPermisoDenegadoException(UsuarioPermisoDenegadoException exception){
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, exception.getMessage());
+        detail.setTitle("Usuario permiso no concedido");
+
+        return detail;
+    }
 }

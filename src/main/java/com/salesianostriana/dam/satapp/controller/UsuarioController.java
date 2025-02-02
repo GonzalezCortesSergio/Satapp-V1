@@ -1,11 +1,10 @@
 package com.salesianostriana.dam.satapp.controller;
 
 import com.salesianostriana.dam.satapp.dto.CreateUsuarioDto;
-import com.salesianostriana.dam.satapp.dto.GetIncidenciaDto;
+import com.salesianostriana.dam.satapp.dto.GetUsuarioDto;
 import com.salesianostriana.dam.satapp.model.Usuario;
 import com.salesianostriana.dam.satapp.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,6 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuario")
@@ -41,15 +43,15 @@ public class UsuarioController {
                                             examples = {
                                                     @ExampleObject(
                                                             value = """
-                                                                        [
-                                                                            {
-                                                                                "type": "about:blank",
-                                                                                "title": "Pas permiso no concedido",
-                                                                                "status": 401,
-                                                                                "detail": "No se ha encontrado un usuario PAS con el id: 2",
-                                                                                "instance": "/api/usuario/admin/2/crear/alumno"
-                                                                            }
-                                                                        ]
+                                                                   
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Pas permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                            "instance": "/api/usuario/admin/2/crear/alumno"
+                                                                        }
+                                                                        
                                                                     """
                                                     )
                                             }
@@ -113,7 +115,7 @@ public class UsuarioController {
                         usuarioService.crearUsuario(idAdmin, createUsuarioDto, tipoUsuario, tipoPersonal));
     }
 
-    @PutMapping("/admin/{idAdmin}/editar/{id}")
+    @PutMapping("c/{id}")
     @Operation(summary = "Un usuario PAS edita otros usuarios")
     @ApiResponses(
             value = {
@@ -127,15 +129,15 @@ public class UsuarioController {
                                             examples = {
                                                     @ExampleObject(
                                                             value = """
-                                                                        [
-                                                                            {
-                                                                                "type": "about:blank",
-                                                                                    "title": "Pas permiso no concedido",
-                                                                                    "status": 401,
-                                                                                    "detail": "No se ha encontrado un usuario PAS con el id: 2",
-                                                                                    "instance": "/api/usuario/admin/2/editar/2"
-                                                                            }
-                                                                        ]
+                                                                        
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Pas permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                            "instance": "/api/usuario/admin/2/editar/2"
+                                                                        }
+                                                                        
                                                                     """
                                                     )
                                             }
@@ -192,7 +194,151 @@ public class UsuarioController {
                     )
             }
     )
-    public Usuario ediarPas(@PathVariable Long idAdmin, @RequestBody CreateUsuarioDto createUsuarioDto, @PathVariable Long id){
+    public Usuario editarPas(@PathVariable Long idAdmin, @RequestBody CreateUsuarioDto createUsuarioDto, @PathVariable Long id){
         return usuarioService.editarUsuario(idAdmin, createUsuarioDto,id);
     }
+
+    @GetMapping("/admin/{idAdmin}/verTodosUsuarios")
+    @Operation(summary = "Un usuario PAS puede ver todos los usuarios")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "El usuario no tiene permiso para ver los usuarios",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Pas permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                            "instance": "/api/usuario/admin/2/verTodosUsuarios"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se ven todos los usuarios",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetUsuarioDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        [
+                                                                            {
+                                                                                "nombre": "Pablo",
+                                                                                "username": "pablo_martinez123",
+                                                                                "email": "pablo.martinez23@triana.salesianos.edu",
+                                                                                "role": "",
+                                                                                "tipoUsuario": "personal"
+                                                                            }
+                                                                        ]
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public List<GetUsuarioDto> findAllUsuarios(@PathVariable Long idAdmin){
+        return usuarioService.findAll(idAdmin)
+                .stream()
+                .map(GetUsuarioDto::of)
+                .toList();
+    }
+
+
+    @GetMapping("/admin/{idUsuario}/verUsuario/{id}")
+    @Operation(summary = "Un usuario PAS puede ver todos los usuarios y un usuario solo puede verse a sí mismo")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "El usuario no tiene permiso para ver el usuario",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Usuario permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No tiene permiso para ver este usuario.",
+                                                                            "instance": "/api/usuario/admin/2/verUsuario/1"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se ve el usuario",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetUsuarioDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "nombre": "maria",
+                                                                            "username": "mariaA",
+                                                                            "email": "a@a",
+                                                                            "role": "noAdmin",
+                                                                            "tipoUsuario": "alumno"
+                                                                        }
+                                 
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No existe el usuario",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Usuario no encontrado",
+                                                                            "status": 404,
+                                                                            "detail": "No hay usuario con la id: 3",
+                                                                            "instance": "/api/usuario/admin/2/verUsuario/3"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public GetUsuarioDto findById(@PathVariable Long idUsuario, @PathVariable Long id) {
+        Optional<Usuario> usuario = usuarioService.findById(id, idUsuario);
+        return GetUsuarioDto.of(usuario.get());
+    }
+
 }
