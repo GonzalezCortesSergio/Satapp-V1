@@ -341,4 +341,13 @@ public class UsuarioController {
         return GetUsuarioDto.of(usuario.get());
     }
 
+    @DeleteMapping("/admin/{idUsuario}/delete/{id}")
+    @Operation(summary = "Eliminar un usuario")
+    public ResponseEntity<?> deleteByIdUsuario(@PathVariable Long idUsuario, @PathVariable Long id) {
+
+        usuarioService.deleteById(idUsuario, id);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }
