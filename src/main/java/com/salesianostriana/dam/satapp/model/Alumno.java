@@ -25,4 +25,9 @@ public class Alumno extends Usuario{
     @Setter(AccessLevel.NONE)
     private List<HistoricoCurso> listaHistoricoCurso = new ArrayList<>();
 
+    public void addHistoricoCurso(HistoricoCurso historicoCurso){
+        historicoCurso.setAlumno(this);
+        listaHistoricoCurso.add(historicoCurso);
+    }
+
 }

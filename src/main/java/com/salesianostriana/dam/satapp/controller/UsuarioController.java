@@ -1,7 +1,9 @@
 package com.salesianostriana.dam.satapp.controller;
 
+import com.salesianostriana.dam.satapp.dto.CreateHistoricoCursoDto;
 import com.salesianostriana.dam.satapp.dto.CreateUsuarioDto;
 import com.salesianostriana.dam.satapp.dto.GetUsuarioDto;
+import com.salesianostriana.dam.satapp.model.HistoricoCurso;
 import com.salesianostriana.dam.satapp.model.Usuario;
 import com.salesianostriana.dam.satapp.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -115,7 +117,7 @@ public class UsuarioController {
                         usuarioService.crearUsuario(idAdmin, createUsuarioDto, tipoUsuario, tipoPersonal));
     }
 
-    @PutMapping("c/{id}")
+    @PutMapping("/admin/{idAdmin}/editar/{id}")
     @Operation(summary = "Un usuario PAS edita otros usuarios")
     @ApiResponses(
             value = {
@@ -410,10 +412,18 @@ public class UsuarioController {
                     )
             }
     )
-    public ResponseEntity<?> deleteByIdUsuario(@PathVariable Long idUsuario, @PathVariable Long id) {
+    public ResponseEntity<Usuario> deleteByIdUsuario(@PathVariable Long idUsuario, @PathVariable Long id) {
 
         usuarioService.deleteById(idUsuario, id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/admin/{idAdmin}/aniadirhistoricocurso/{idAlumno}")
+    @Operation(summary = "Añadir un historico curso")
+    public Usuario aniadirHistoricoCurso(@PathVariable Long idAlumno, @PathVariable Long idAdmin,
+                                                CreateHistoricoCursoDto createHistoricoCursoDto){
+
+        return usuarioService.aniadirHistoricoCurso(idAlumno, idAdmin, createHistoricoCursoDto);
     }
 
 

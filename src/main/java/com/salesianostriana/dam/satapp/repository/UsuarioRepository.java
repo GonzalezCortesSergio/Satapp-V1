@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.satapp.repository;
 
+import com.salesianostriana.dam.satapp.model.Alumno;
 import com.salesianostriana.dam.satapp.model.Personal;
 import com.salesianostriana.dam.satapp.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,6 +31,12 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     """)
     Optional<Usuario> findByIdPropio(@Param("id") Long id, @Param("idUsuario") Long idUsuario);
 
-
+    @Query("""
+            select u
+            from Usuario u
+            where type(u)= 'alumno'
+            and u.id = :idAlumno
+            """)
+    Optional<Alumno> findByIdAlumno(@Param("idAlumno") Long idAlumno, @Param("idAdmin") Long idAdmin);
 
 }

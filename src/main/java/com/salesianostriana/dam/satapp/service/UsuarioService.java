@@ -1,13 +1,12 @@
 package com.salesianostriana.dam.satapp.service;
 
+import com.salesianostriana.dam.satapp.dto.CreateHistoricoCursoDto;
 import com.salesianostriana.dam.satapp.dto.CreateUsuarioDto;
 import com.salesianostriana.dam.satapp.error.PasPermisoDenegadoException;
 import com.salesianostriana.dam.satapp.error.TipoUsusarioNoPermitidoException;
 import com.salesianostriana.dam.satapp.error.UsuarioNotFoundException;
 import com.salesianostriana.dam.satapp.error.UsuarioPermisoDenegadoException;
-import com.salesianostriana.dam.satapp.model.Personal;
-import com.salesianostriana.dam.satapp.model.Tipo;
-import com.salesianostriana.dam.satapp.model.Usuario;
+import com.salesianostriana.dam.satapp.model.*;
 import com.salesianostriana.dam.satapp.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -99,14 +98,28 @@ public class UsuarioService {
             throw new UsuarioNotFoundException("No se encontró el usuario con id: " + id);
         }
 
-        if (!idUsuario.equals(id) && usuarioRepository.findByIdPas(idUsuario).isEmpty()) {
+        if (usuarioRepository.findByIdPas(idUsuario).isEmpty()) {
             throw new UsuarioPermisoDenegadoException("No tiene permiso para eliminar este usuario.");
         }
 
         usuarioRepository.deleteById(id);
     }
 
+    public Alumno aniadirHistoricoCurso(Long idAlumno,  Long idAdmin,
+                                        CreateHistoricoCursoDto createHistoricoCursoDto){
 
+        if (usuarioRepository.findByIdPas(idAdmin).isEmpty()){
+            throw new PasPermisoDenegadoException("No se ha encontrado un usuario PAS con el id: %d".formatted(idAdmin));
+        }
+
+        Alumno alumno = usuarioRepository.findByIdAlumno(idAlumno, idAdmin)
+                .orElseThrow(()-> new UsuarioNotFoundException("No hay alumno con la id: %d".formatted(idAlumno)));
+
+        alumno.addHistoricoCurso(createHistoricoCursoDto.toHistoricoCurso());
+
+        return usuarioRepository.save(alumno);
+
+    }
 
 
 }
