@@ -37,6 +37,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
             where type(u)= 'alumno'
             and u.id = :idAlumno
             """)
-    Optional<Alumno> findByIdAlumno(@Param("idAlumno") Long idAlumno, @Param("idAdmin") Long idAdmin);
+    Optional<Alumno> findByIdAlumno(@Param("idAlumno") Long idAlumno);
 
 }

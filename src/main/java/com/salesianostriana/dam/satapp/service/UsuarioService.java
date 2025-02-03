@@ -112,10 +112,12 @@ public class UsuarioService {
             throw new PasPermisoDenegadoException("No se ha encontrado un usuario PAS con el id: %d".formatted(idAdmin));
         }
 
-        Alumno alumno = usuarioRepository.findByIdAlumno(idAlumno, idAdmin)
+        Alumno alumno = usuarioRepository.findByIdAlumno(idAlumno)
                 .orElseThrow(()-> new UsuarioNotFoundException("No hay alumno con la id: %d".formatted(idAlumno)));
 
-        alumno.addHistoricoCurso(createHistoricoCursoDto.toHistoricoCurso());
+        HistoricoCurso historicoCurso = createHistoricoCursoDto.toHistoricoCurso();
+
+        alumno.addHistoricoCurso(historicoCurso);
 
         return usuarioRepository.save(alumno);
 

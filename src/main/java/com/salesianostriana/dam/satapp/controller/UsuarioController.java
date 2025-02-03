@@ -421,7 +421,7 @@ public class UsuarioController {
     @PutMapping("/admin/{idAdmin}/aniadirhistoricocurso/{idAlumno}")
     @Operation(summary = "Añadir un historico curso")
     public Usuario aniadirHistoricoCurso(@PathVariable Long idAlumno, @PathVariable Long idAdmin,
-                                                CreateHistoricoCursoDto createHistoricoCursoDto){
+                                                @RequestBody CreateHistoricoCursoDto createHistoricoCursoDto){
 
         return usuarioService.aniadirHistoricoCurso(idAlumno, idAdmin, createHistoricoCursoDto);
     }

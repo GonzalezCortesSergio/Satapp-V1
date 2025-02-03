@@ -18,7 +18,7 @@ public class HistoricoCurso {
     @Id
     @ManyToOne
     @JoinColumn(name = "alumno_id",
-    foreignKey = @ForeignKey(name = "fk_historico_curso_alumno"))
+            foreignKey = @ForeignKey(name = "fk_historico_curso_alumno"))
     private Alumno alumno;
 
     private String curso;
