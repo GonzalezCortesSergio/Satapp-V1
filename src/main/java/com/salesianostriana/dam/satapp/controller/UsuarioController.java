@@ -343,6 +343,73 @@ public class UsuarioController {
 
     @DeleteMapping("/admin/{idUsuario}/delete/{id}")
     @Operation(summary = "Eliminar un usuario")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "El usuario no tiene permiso para ver el usuario",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Usuario permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No tiene permiso para eliminar este usuario.",
+                                                                            "instance": "/api/usuario/admin/3/delete/1"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Se borra el usuario",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema,
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                   
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No existe el usuario",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Usuario no encontrado",
+                                                                            "status": 404,
+                                                                            "detail": "No se encontró el usuario con id: 2",
+                                                                            "instance": "/api/usuario/admin/1/delete/2"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
     public ResponseEntity<?> deleteByIdUsuario(@PathVariable Long idUsuario, @PathVariable Long id) {
 
         usuarioService.deleteById(idUsuario, id);
