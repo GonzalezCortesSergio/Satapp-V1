@@ -98,6 +98,20 @@ public class UsuarioService {
         return result;
     }
 
+    public void deleteById(Long idUsuario, Long id) {
+
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+
+        if (usuario.isEmpty()) {
+            throw new UsuarioNotFoundException("No se encontró el usuario con id: " + id);
+        }
+
+        if (!idUsuario.equals(id) && usuarioRepository.findByIdPas(idUsuario).isEmpty()) {
+            throw new UsuarioPermisoDenegadoException("No tiene permiso para eliminar este usuario.");
+        }
+
+        usuarioRepository.deleteById(id);
+    }
 
 
 
