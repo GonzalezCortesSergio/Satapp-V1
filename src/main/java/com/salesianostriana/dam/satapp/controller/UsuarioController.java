@@ -337,8 +337,8 @@ public class UsuarioController {
             }
     )
     public GetUsuarioDto findById(@PathVariable Long idUsuario, @PathVariable Long id) {
-        Optional<Usuario> usuario = usuarioService.findById(id, idUsuario);
-        return GetUsuarioDto.of(usuario.get());
+
+        return GetUsuarioDto.of(usuarioService.findById(id, idUsuario));
     }
 
     @DeleteMapping("/admin/{idUsuario}/delete/{id}")
