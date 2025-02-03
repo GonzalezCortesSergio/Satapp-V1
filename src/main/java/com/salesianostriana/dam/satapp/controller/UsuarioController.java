@@ -412,7 +412,7 @@ public class UsuarioController {
                     )
             }
     )
-    public ResponseEntity<Usuario> deleteByIdUsuario(@PathVariable Long idUsuario, @PathVariable Long id) {
+    public ResponseEntity<?> deleteByIdUsuario(@PathVariable Long idUsuario, @PathVariable Long id) {
 
         usuarioService.deleteById(idUsuario, id);
         return ResponseEntity.noContent().build();
