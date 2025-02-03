@@ -81,21 +81,14 @@ public class UsuarioService {
         return result;
     }
 
-    public Optional<Usuario> findById(Long id, Long idUsuario) {
+    public Usuario findById(Long id, Long idUsuario) {
 
-        Optional<Usuario> usuarioBuscado = usuarioRepository.findById(id);
-
-        if (usuarioBuscado.isEmpty()) {
+        if (usuarioRepository.findById(id).isEmpty()) {
             throw new UsuarioNotFoundException("No hay usuario con la id: %d".formatted(id));
         }
 
-        Optional<Usuario> result = usuarioRepository.findByIdPropio(id, idUsuario);
-
-        if (result.isEmpty()) {
-            throw new UsuarioPermisoDenegadoException("No tiene permiso para ver este usuario.");
-        }
-
-        return result;
+        return usuarioRepository.findByIdPropio(id, idUsuario)
+                .orElseThrow(()-> new UsuarioPermisoDenegadoException("No tiene permiso para ver este usuario."));
     }
 
     public void deleteById(Long idUsuario, Long id) {
