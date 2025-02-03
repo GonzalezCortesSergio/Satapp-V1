@@ -99,7 +99,7 @@ public class UsuarioService {
             throw new UsuarioNotFoundException("No se encontró el usuario con id: " + id);
         }
 
-        if (!idUsuario.equals(id) && usuarioRepository.findByIdPas(idUsuario).isEmpty()) {
+        if (usuarioRepository.findByIdPas(idUsuario).isEmpty()) {
             throw new UsuarioPermisoDenegadoException("No tiene permiso para eliminar este usuario.");
         }
 
