@@ -11,7 +11,7 @@ public record CreateEquipoDto(
 
         return Equipo.builder()
                 .nombre(this.nombre)
-                .catacteristicas(this.caracteristicas)
+                .caracteristicas(this.caracteristicas)
                 .build();
     }
 }

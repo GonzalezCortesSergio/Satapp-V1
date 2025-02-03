@@ -1,9 +1,11 @@
 package com.salesianostriana.dam.satapp.controller;
 
 import com.salesianostriana.dam.satapp.dto.CreateEquipoDto;
+import com.salesianostriana.dam.satapp.dto.GetEquipoListDto;
 import com.salesianostriana.dam.satapp.model.Equipo;
 import com.salesianostriana.dam.satapp.service.EquipoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,6 +18,8 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/equipo")
 @RequiredArgsConstructor
@@ -26,6 +30,67 @@ import org.springframework.web.bind.annotation.*;
 public class EquipoController {
 
     private final EquipoService equipoService;
+
+
+    @GetMapping
+    @Operation(summary = "Se muestran los equipos que no tienen incidencia o las incidencias que tiene están cerradas")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se ha encontrado 1 o más equipos",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetEquipoListDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "count": 1,
+                                                                            "results": [
+                                                                                {
+                                                                                    "id": 2,
+                                                                                    "nombre": "Aire acondicionado",
+                                                                                    "caracteristicas": "Un aire acondicionado para que los de DAM en verano no pasen calor"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se han encontrado equipos sin incidencia o incidencias cerradas",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Equipo no encontrado",
+                                                                            "status": 404,
+                                                                            "detail": "No se han encontrado equipos",
+                                                                            "instance": "/api/equipo"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public GetEquipoListDto findAllWithNoIncidencia() {
+
+        return GetEquipoListDto.of(equipoService.findAllWithNoIncidencia());
+    }
 
 
     @PostMapping("/admin/{idAdmin}/crear")
