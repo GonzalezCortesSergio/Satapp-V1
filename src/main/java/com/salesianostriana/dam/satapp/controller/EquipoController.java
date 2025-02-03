@@ -238,4 +238,50 @@ public class EquipoController {
 
         return equipoService.edit(idAdmin, idEquipo, equipoDto);
     }
-}
+
+    @DeleteMapping("/admin/{idAdmin}/delete/{idEquipo}")
+    @Operation(summary = "Se borra un equipo con soft delete")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Se ha eliminado el equipo correctamente",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                           responseCode = "401",
+                            description = "No tienes permisos para hacer esta acción",
+                            content = {
+                                   @Content(
+                                           mediaType = "application/json",
+                                           schema = @Schema(implementation = ProblemDetail.class),
+                                           examples = {
+                                                   @ExampleObject(
+                                                           value = """
+                                                                    {
+                                                                        "type": "about:blank",
+                                                                        "title": "Pas permiso no concedido",
+                                                                        "status": 401,
+                                                                        "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                        "instance": "/api/equipo/admin/2/delete/2"
+                                                                    }
+                                                                   """
+                                                   )
+                                           }
+                                   )
+                            }
+                    )
+            }
+    )
+    public ResponseEntity<?> deleteEquipo(@PathVariable Long idAdmin, @PathVariable Long idEquipo) {
+
+        equipoService.remove(idAdmin, idEquipo);
+
+        return ResponseEntity.noContent().build();
+    }
+ }
