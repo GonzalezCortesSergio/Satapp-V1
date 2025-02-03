@@ -1,12 +1,10 @@
 package com.salesianostriana.dam.satapp.controller;
 
 import com.salesianostriana.dam.satapp.dto.CreateEquipoDto;
-import com.salesianostriana.dam.satapp.dto.EditEquipoDto;
 import com.salesianostriana.dam.satapp.dto.GetEquipoListDto;
 import com.salesianostriana.dam.satapp.model.Equipo;
 import com.salesianostriana.dam.satapp.service.EquipoService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,8 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/equipo")
@@ -235,7 +231,10 @@ public class EquipoController {
                     )
             }
     )
-    public Equipo edit(@PathVariable Long idAdmin, @PathVariable Long idEquipo, @RequestBody CreateEquipoDto equipoDto) {
+    public Equipo edit(@PathVariable Long idAdmin, @PathVariable Long idEquipo,
+                       @Schema(description = "Nombre y descripción a cambiar",
+                       implementation = CreateEquipoDto.class
+                       )@RequestBody CreateEquipoDto equipoDto) {
 
         return equipoService.edit(idAdmin, idEquipo, equipoDto);
     }

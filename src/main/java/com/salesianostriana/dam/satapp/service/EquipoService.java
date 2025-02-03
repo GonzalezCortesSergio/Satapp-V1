@@ -1,7 +1,6 @@
 package com.salesianostriana.dam.satapp.service;
 
 import com.salesianostriana.dam.satapp.dto.CreateEquipoDto;
-import com.salesianostriana.dam.satapp.dto.EditEquipoDto;
 import com.salesianostriana.dam.satapp.error.EquipoNotFoundException;
 import com.salesianostriana.dam.satapp.error.PasPermisoDenegadoException;
 import com.salesianostriana.dam.satapp.model.Equipo;
