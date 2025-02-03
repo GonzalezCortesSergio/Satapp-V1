@@ -64,4 +64,17 @@ public class GlobalErrorController extends ResponseEntityExceptionHandler {
 
         return detail;
     }
+
+
+    //errores equipo
+
+    @ExceptionHandler(EquipoNotFoundException.class)
+    public ProblemDetail handleEquipoNotFoundException(EquipoNotFoundException exception) {
+
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,
+                exception.getMessage());
+        detail.setTitle("Equipo no encontrado");
+
+        return detail;
+    }
 }

@@ -20,7 +20,7 @@ public class Equipo {
 
     private String nombre;
 
-    private String catacteristicas;
+    private String caracteristicas;
 
     @ManyToOne
     @JoinColumn(
