@@ -5,7 +5,6 @@ import com.salesianostriana.dam.satapp.dto.GetEquipoListDto;
 import com.salesianostriana.dam.satapp.model.Equipo;
 import com.salesianostriana.dam.satapp.service.EquipoService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,8 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/equipo")
@@ -158,5 +155,87 @@ public class EquipoController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(equipoService.save(idAdmin, equipoDto));
+    }
+
+    @PutMapping("/admin/{idAdmin}/edit/{idEquipo}")
+    @Operation(summary = "Se edita un equipo")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se ha editado el equipo correctamente",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = Equipo.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "id": 1,
+                                                                            "nombre": "Portátil",
+                                                                            "caracteristicas": "Portátil to wapo pa los nenes de primero",
+                                                                            "ubicacion": null
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "El usuario no tiene los permisos para editar un equipo",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Pas permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                            "instance": "/api/equipo/admin/2/edit/1"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se ha encontrado ningún equipo",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Equipo no encontrado",
+                                                                            "status": 404,
+                                                                            "detail": "No se ha encontrado un equipo con el ID: 2",
+                                                                            "instance": "/api/equipo/admin/1/edit/2"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public Equipo edit(@PathVariable Long idAdmin, @PathVariable Long idEquipo,
+                       @Schema(description = "Nombre y descripción a cambiar",
+                       implementation = CreateEquipoDto.class
+                       )@RequestBody CreateEquipoDto equipoDto) {
+
+        return equipoService.edit(idAdmin, idEquipo, equipoDto);
     }
 }

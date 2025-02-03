@@ -37,4 +37,19 @@ public class EquipoService {
 
         return equipoRepository.save(equipoDto.toEquipo());
     }
+
+    public Equipo edit(Long idAdmin, Long idEquipo, CreateEquipoDto equipoDto) {
+
+        if(usuarioRepository.findByIdPas(idAdmin).isEmpty())
+            throw new PasPermisoDenegadoException("No se ha encontrado un usuario PAS con el id: %d".formatted(idAdmin));
+
+        return equipoRepository.findById(idEquipo)
+                .map(antiguo -> {
+
+                    antiguo.setNombre(equipoDto.nombre());
+                    antiguo.setCaracteristicas(equipoDto.caracteristicas());
+                    return equipoRepository.save(antiguo);
+                })
+                .orElseThrow(() -> new EquipoNotFoundException(idEquipo));
+    }
 }

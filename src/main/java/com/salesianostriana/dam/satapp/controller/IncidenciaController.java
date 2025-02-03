@@ -3,6 +3,7 @@ package com.salesianostriana.dam.satapp.controller;
 import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
 import com.salesianostriana.dam.satapp.dto.GetIncidenciaDetailsDto;
 import com.salesianostriana.dam.satapp.dto.GetIncidenciaDto;
+import com.salesianostriana.dam.satapp.dto.GetIncidenciaListDto;
 import com.salesianostriana.dam.satapp.service.IncidenciaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -39,18 +40,21 @@ public class IncidenciaController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            array = @ArraySchema(schema = @Schema(implementation = GetIncidenciaDto.class)),
+                                            schema = @Schema(implementation = GetIncidenciaListDto.class),
                                             examples = {
                                                     @ExampleObject(
                                                             value = """
-                                                                        [
-                                                                            {
-                                                                                "id": 1,
-                                                                                "titulo": "Ordenador ardiendo",
-                                                                                "descripcion": "No sé, el ordenador está ardiendo socorro ayuda ya porfavor",
-                                                                                "urgencia": 5
-                                                                            }
-                                                                        ]
+                                                                        {
+                                                                            "count": 1,
+                                                                            "results": [
+                                                                                {
+                                                                                    "id": 1,
+                                                                                    "titulo": "Ordenador ardiendo",
+                                                                                    "descripcion": "No sé, el ordenador está ardiendo socorro ayuda ya porfavor",
+                                                                                    "urgencia": 5
+                                                                                }
+                                                                            ]
+                                                                        }
                                                                     """
                                                     )
                                             }
@@ -82,11 +86,9 @@ public class IncidenciaController {
                     )
             }
     )
-    public List<GetIncidenciaDto> findIncidenciasByUsuario(@PathVariable Long idUsuario) {
+    public GetIncidenciaListDto findIncidenciasByUsuario(@PathVariable Long idUsuario) {
 
-        return incidenciaService.findAllByUsuario(idUsuario).stream()
-                .map(GetIncidenciaDto::of)
-                .toList();
+        return GetIncidenciaListDto.of(incidenciaService.findAllByUsuario(idUsuario));
     }
 
     @GetMapping("/usuario/{idUsuario}/detalles/{idIncidencia}")
