@@ -5,15 +5,28 @@ import com.salesianostriana.dam.satapp.model.Equipo;
 public record GetEquipoDto(
         Long id,
         String nombre,
-        String caracteristicas
+        String caracteristicas,
+        String ubicacion
 ) {
 
     public static GetEquipoDto of (Equipo equipo) {
 
+        if(equipo.getUbicacion() == null) {
+
+            return new GetEquipoDto(
+                    equipo.getId(),
+                    equipo.getNombre(),
+                    equipo.getCaracteristicas(),
+                    " "
+            );
+        }
+
         return new GetEquipoDto(
                 equipo.getId(),
                 equipo.getNombre(),
-                equipo.getCaracteristicas()
+                equipo.getCaracteristicas(),
+                equipo.getUbicacion().getNombre()
         );
+
     }
 }
