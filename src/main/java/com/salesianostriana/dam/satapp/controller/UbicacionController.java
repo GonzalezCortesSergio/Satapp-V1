@@ -158,5 +158,45 @@ public class UbicacionController {
     }
 
     @DeleteMapping("/admin/{idAdmin}/delete/{nombre}")
-    public ResponseEntity<?>
+    @Operation(summary = "Se borra una ubicación por nombre")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Se borra la ubicación correctamente",
+                            content = {
+                                    @Content
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "No tienes los permisos para borrar la ubicación",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Pas permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                            "instance": "/api/ubicacion/admin/2/delete/Aula%201"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public ResponseEntity<?> deleteByNombre(@PathVariable Long idAdmin, @PathVariable String nombre) {
+
+        ubicacionService.deleteByNombre(idAdmin, nombre);
+
+        return ResponseEntity.noContent().build();
+    }
 }
