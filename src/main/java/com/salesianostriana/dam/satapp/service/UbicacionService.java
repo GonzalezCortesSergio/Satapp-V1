@@ -23,9 +23,10 @@ public class UbicacionService {
         if(usuarioRepository.findByIdPas(idAdmin).isEmpty())
             throw new PasPermisoDenegadoException("No se ha encontrado un usuario PAS con el id: %d".formatted(idAdmin));
 
-        Optional<Ubicacion> optionalUbicacion = ubicacionRepository.findByNombre(nombreUbicacion);
-        if(optionalUbicacion.isPresent())
-            throw new NombreRepetidoException(optionalUbicacion.get());
+        Optional<Ubicacion> ubicacionOptional = ubicacionRepository.findByNombre(nombreUbicacion);
+
+        if(ubicacionOptional.isPresent())
+            throw new NombreRepetidoException(ubicacionOptional.get());
 
         Ubicacion ubicacion = Ubicacion.builder()
                 .nombre(nombreUbicacion)
