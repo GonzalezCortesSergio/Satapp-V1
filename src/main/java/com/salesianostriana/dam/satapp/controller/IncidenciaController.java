@@ -1,9 +1,6 @@
 package com.salesianostriana.dam.satapp.controller;
 
-import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
-import com.salesianostriana.dam.satapp.dto.GetIncidenciaDetailsDto;
-import com.salesianostriana.dam.satapp.dto.GetIncidenciaDto;
-import com.salesianostriana.dam.satapp.dto.GetIncidenciaListDto;
+import com.salesianostriana.dam.satapp.dto.*;
 import com.salesianostriana.dam.satapp.service.IncidenciaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -301,6 +298,84 @@ public class IncidenciaController {
         incidenciaService.deleteById(idUsuario, idIncidencia);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{idIncidencia}/usuario/{idUsuario}/addNota")
+    @Operation(summary = "Se añade una nota a una incidencia que no está cerrada")
+    @ApiResponses(
+           value = {
+                   @ApiResponse(
+                           responseCode = "200",
+                           description = "Se añade la nota correctamente",
+                           content = {
+                                   @Content(
+                                           mediaType = "application/json",
+                                           schema = @Schema(implementation = GetIncidenciaDetailsDto.class),
+                                           examples = {
+                                                   @ExampleObject(
+                                                           value = """
+                                                                    {
+                                                                        "fecha": "2025-01-28",
+                                                                        "titulo": "Ordenador ardiendo",
+                                                                        "descripcion": "No sÃ©, el ordenador estÃ¡ ardiendo socorro ayuda ya porfavor",
+                                                                        "estado": "ABIERTA",
+                                                                        "urgencia": 5,
+                                                                        "categoria": "Ordenadores",
+                                                                        "notas": [
+                                                                            {
+                                                                                "id": 1,
+                                                                                "fecha": "2025-02-04",
+                                                                                "contenido": "Ha dejado de arder, pero está todo chamuscao",
+                                                                                "autor": "Pablo"
+                                                                            }
+                                                                        ],
+                                                                        "equipo": {
+                                                                            "id": 1,
+                                                                            "nombre": "Ordenador",
+                                                                            "caracteristicas": "Un ordenador to wapo",
+                                                                            "ubicacion": null,
+                                                                            "deleted": false
+                                                                        },
+                                                                        "ubicacion": {
+                                                                            "id": 1,
+                                                                            "nombre": "Aula 1",
+                                                                            "deleted": false
+                                                                        }
+                                                                    }
+                                                                   """
+                                                   )
+                                           }
+                                   )
+                           }
+                   ),
+                   @ApiResponse(
+                           responseCode = "404",
+                           description = "No se encuentra una incidencia para agregar una nota",
+                           content = {
+                                   @Content(
+                                           mediaType = "application/json",
+                                           schema = @Schema(implementation = ProblemDetail.class),
+                                           examples = {
+                                                   @ExampleObject(
+                                                           value = """
+                                                                    {
+                                                                        "type": "about:blank",
+                                                                        "title": "Incidencia no encontrada",
+                                                                        "status": 404,
+                                                                        "detail": "No se ha encontrado una incidencia con el ID: 2 para el usuario con ID: 1",
+                                                                        "instance": "/api/incidencia/2/usuario/1/addNota"
+                                                                    }
+                                                                   """
+                                                   )
+                                           }
+                                   )
+                           }
+                   )
+           }
+    )
+    public GetIncidenciaDetailsDto addNota(@PathVariable Long idIncidencia, @PathVariable Long idUsuario, @RequestBody CreateNotaDto notaDto) {
+
+        return GetIncidenciaDetailsDto.of(incidenciaService.addNota(idUsuario, idIncidencia, notaDto));
     }
 
 
