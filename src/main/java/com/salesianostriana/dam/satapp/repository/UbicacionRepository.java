@@ -14,5 +14,5 @@ public interface UbicacionRepository extends JpaRepository<Ubicacion, Long> {
             FROM Ubicacion u
             WHERE u.nombre = :nombre
             """)
-    public Optional<Ubicacion> findByNombre(String nombre);
+    Optional<Ubicacion> findByNombre(String nombre);
 }
