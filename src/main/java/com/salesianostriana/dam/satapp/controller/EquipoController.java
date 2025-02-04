@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.satapp.controller;
 
 import com.salesianostriana.dam.satapp.dto.CreateEquipoDto;
+import com.salesianostriana.dam.satapp.dto.GetEquipoDto;
 import com.salesianostriana.dam.satapp.dto.GetEquipoListDto;
 import com.salesianostriana.dam.satapp.model.Equipo;
 import com.salesianostriana.dam.satapp.service.EquipoService;
@@ -49,7 +50,8 @@ public class EquipoController {
                                                                                 {
                                                                                     "id": 2,
                                                                                     "nombre": "Aire acondicionado",
-                                                                                    "caracteristicas": "Un aire acondicionado para que los de DAM en verano no pasen calor"
+                                                                                    "caracteristicas": "Un aire acondicionado para que los de DAM en verano no pasen calor",
+                                                                                    "ubicacion": " "
                                                                                 }
                                                                             ]
                                                                         }
@@ -100,7 +102,7 @@ public class EquipoController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = Equipo.class),
+                                            schema = @Schema(implementation = GetEquipoDto.class),
                                             examples = {
                                                     @ExampleObject(
                                                             value = """
@@ -108,7 +110,7 @@ public class EquipoController {
                                                                             "id": 1,
                                                                             "nombre": "Aire acondicionado",
                                                                             "catacteristicas": "Un aire acondicionado para que los de DAM en verano no pasen calor",
-                                                                            "ubicacion": null
+                                                                            "ubicacion": " "
                                                                         }
                                                                     """
                                                     )
@@ -141,7 +143,7 @@ public class EquipoController {
                     )
             }
     )
-    public ResponseEntity<Equipo> crearEquipo(@PathVariable Long idAdmin,
+    public ResponseEntity<GetEquipoDto> crearEquipo(@PathVariable Long idAdmin,
                                               @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                       description = "Equipo a crear",
                                                       required = true,
@@ -165,7 +167,7 @@ public class EquipoController {
                                               @RequestBody CreateEquipoDto equipoDto) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(equipoService.save(idAdmin, equipoDto));
+                .body(GetEquipoDto.of(equipoService.save(idAdmin, equipoDto)));
     }
 
     @PutMapping("/admin/{idAdmin}/edit/{idEquipo}")
@@ -178,7 +180,7 @@ public class EquipoController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = Equipo.class),
+                                            schema = @Schema(implementation = GetEquipoDto.class),
                                             examples = {
                                                     @ExampleObject(
                                                             value = """
@@ -186,7 +188,7 @@ public class EquipoController {
                                                                             "id": 1,
                                                                             "nombre": "Portátil",
                                                                             "caracteristicas": "Portátil to wapo pa los nenes de primero",
-                                                                            "ubicacion": null
+                                                                            "ubicacion": " "
                                                                         }
                                                                     """
                                                     )
@@ -242,7 +244,7 @@ public class EquipoController {
                     )
             }
     )
-    public Equipo edit(@PathVariable Long idAdmin, @PathVariable Long idEquipo,
+    public GetEquipoDto edit(@PathVariable Long idAdmin, @PathVariable Long idEquipo,
                        @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                description = "Datos a editar del equipo",
                                required = true,
@@ -265,7 +267,7 @@ public class EquipoController {
                        )
                        @RequestBody CreateEquipoDto equipoDto) {
 
-        return equipoService.edit(idAdmin, idEquipo, equipoDto);
+        return GetEquipoDto.of(equipoService.edit(idAdmin, idEquipo, equipoDto));
     }
 
     @DeleteMapping("/admin/{idAdmin}/delete/{idEquipo}")
@@ -312,5 +314,107 @@ public class EquipoController {
         equipoService.remove(idAdmin, idEquipo);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/admin/{idAdmin}/cambiar/{idEquipo}/ubicacion/{nombreUbicacion}")
+    @Operation(summary = "Se cambia un equipo de ubicación")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se ha cambiado de ubicación correctamente",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetEquipoDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "id": 2,
+                                                                            "nombre": "Aire acondicionado",
+                                                                            "caracteristicas": "Un aire acondicionado para que los de DAM en verano no pasen calor",
+                                                                            "ubicacion": "Aula 1"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "No tienes permisos para hacer esta acción",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Pas permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                            "instance": "/api/equipo/admin/2/cambiar/2/ubicacion/Aula%201"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se ha encontrado el equipo a cambiar de ubicación",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Equipo no encontrado",
+                                                                            "status": 404,
+                                                                            "detail": "No se ha encontrado un equipo con el ID: 2",
+                                                                            "instance": "/api/equipo/admin/1/cambiar/2/ubicacion/Aula%202"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se ha encontrado la ubicación a cambiar",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Ubicación no encontrada",
+                                                                            "status": 404,
+                                                                            "detail": "No se han encontrado ubicaciones",
+                                                                            "instance": "/api/equipo/admin/1/cambiar/1/ubicacion/Aula%202"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public GetEquipoDto cambiarUbicacion(@PathVariable Long idAdmin, @PathVariable Long idEquipo, @PathVariable String nombreUbicacion) {
+
+        return GetEquipoDto.of(equipoService.cambiarUbicacion(idAdmin, idEquipo, nombreUbicacion));
     }
  }

@@ -11,16 +11,19 @@ import com.salesianostriana.dam.satapp.model.*;
 import com.salesianostriana.dam.satapp.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
 
+    @Transactional
     public Usuario crearUsuario(Long id, CreateUsuarioDto createUsuarioDto, String tipoUsuario, String tipoPersonal){
 
         if (usuarioRepository.findByIdPas(id).isEmpty()){
@@ -47,6 +50,7 @@ public class UsuarioService {
 
     }
 
+    @Transactional
     public Usuario editarUsuario(Long idAdmin, CreateUsuarioDto createUsuarioDto, Long id){
 
         if (usuarioRepository.findByIdPas(idAdmin).isEmpty()){
@@ -66,6 +70,7 @@ public class UsuarioService {
 
     }
 
+    @Transactional
     public List<Usuario> findAll(Long idAdmin) {
 
         if (usuarioRepository.findByIdPas(idAdmin).isEmpty()){
@@ -81,6 +86,7 @@ public class UsuarioService {
         return result;
     }
 
+    @Transactional
     public Usuario findById(Long id, Long idUsuario) {
 
         if (usuarioRepository.findById(id).isEmpty()) {
@@ -91,6 +97,7 @@ public class UsuarioService {
                 .orElseThrow(()-> new UsuarioPermisoDenegadoException("No tiene permiso para ver este usuario."));
     }
 
+    @Transactional
     public void deleteById(Long idUsuario, Long id) {
 
         Optional<Usuario> usuario = usuarioRepository.findById(id);
@@ -106,6 +113,7 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
+    @Transactional
     public Alumno aniadirHistoricoCurso(Long idAlumno, Long idAdmin,
                                         CreateHistoricoCursoDto createHistoricoCursoDto){
 
