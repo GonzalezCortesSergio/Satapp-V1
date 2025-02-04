@@ -71,6 +71,29 @@ public class UbicacionController {
                                             }
                                     )
                             }
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "No tienes los permisos para crear una ubicación",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Pas permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                            "instance": "/api/ubicacion/admin/2/crear/2%C2%BA%20DAM"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
                     )
             }
     )
