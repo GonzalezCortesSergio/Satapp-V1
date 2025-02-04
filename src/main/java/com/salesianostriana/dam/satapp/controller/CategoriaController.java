@@ -271,5 +271,15 @@ public class CategoriaController {
                 .toList();
     }
 
+    @DeleteMapping("/admin/{idAdmin}/delete/{nombre}")
+    @Operation(summary = "Se borra la categoria")
+    public ResponseEntity<?> borrarCategoria(@PathVariable Long idAdmin, @PathVariable String nombre){
+
+        categoriaService.deleteByNombre(idAdmin, nombre);
+
+        return ResponseEntity.noContent().build();
+
+    }
+
 
 }
