@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
+@Where(clause = "deleted=false")
 public class Ubicacion {
 
     @Id
@@ -24,6 +27,9 @@ public class Ubicacion {
 
     @Column(unique = true)
     private String nombre;
+
+    @Builder.Default
+    private boolean deleted = Boolean.FALSE;
 
 
     @Override

@@ -46,4 +46,12 @@ public class UbicacionService {
 
         return ubicacionRepository.save(ubicacion);
     }
+
+    public void deleteByNombre(Long idAdmin, String nombreUbicacion) {
+
+        if(usuarioRepository.findByIdPas(idAdmin).isEmpty())
+            throw new PasPermisoDenegadoException(idAdmin);
+
+        ubicacionRepository.deleteByNombre(nombreUbicacion);
+    }
 }

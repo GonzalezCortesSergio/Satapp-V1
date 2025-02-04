@@ -156,4 +156,7 @@ public class UbicacionController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ubicacionService.save(idAdmin,nombre));
     }
+
+    @DeleteMapping("/admin/{idAdmin}/delete/{nombre}")
+    public ResponseEntity<?>
 }
