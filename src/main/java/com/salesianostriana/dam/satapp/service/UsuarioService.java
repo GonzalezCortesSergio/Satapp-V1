@@ -2,6 +2,7 @@ package com.salesianostriana.dam.satapp.service;
 
 import com.salesianostriana.dam.satapp.dto.CreateHistoricoCursoDto;
 import com.salesianostriana.dam.satapp.dto.CreateUsuarioDto;
+import com.salesianostriana.dam.satapp.dto.GetHistoricoCursoDto;
 import com.salesianostriana.dam.satapp.error.PasPermisoDenegadoException;
 import com.salesianostriana.dam.satapp.error.TipoUsusarioNoPermitidoException;
 import com.salesianostriana.dam.satapp.error.UsuarioNotFoundException;
@@ -105,7 +106,7 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    public Alumno aniadirHistoricoCurso(Long idAlumno,  Long idAdmin,
+    public Alumno aniadirHistoricoCurso(Long idAlumno, Long idAdmin,
                                         CreateHistoricoCursoDto createHistoricoCursoDto){
 
         if (usuarioRepository.findByIdPas(idAdmin).isEmpty()){
