@@ -91,4 +91,15 @@ public class GlobalErrorController extends ResponseEntityExceptionHandler {
 
         return detail;
     }
+
+    @ExceptionHandler(UbicacionNotFoundException.class)
+    public ProblemDetail handleUbicacionNotFoundException(UbicacionNotFoundException exception) {
+
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,
+                exception.getMessage());
+
+        detail.setTitle("Ubicación no encontrada");
+
+        return detail;
+    }
 }

@@ -6,14 +6,16 @@ import java.util.List;
 
 public record GetUbicacionListDto(
         Long count,
-        List<Ubicacion> results
+        List<String> results
 ) {
 
     public static GetUbicacionListDto of (List<Ubicacion> ubicacionList) {
 
         return new GetUbicacionListDto(
                 (long) ubicacionList.size(),
-                ubicacionList
+                ubicacionList.stream()
+                        .map(Ubicacion::getNombre)
+                        .toList()
         );
     }
 }

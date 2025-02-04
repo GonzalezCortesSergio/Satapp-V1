@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.satapp.controller;
 
+import com.salesianostriana.dam.satapp.dto.GetUbicacionListDto;
 import com.salesianostriana.dam.satapp.model.Ubicacion;
 import com.salesianostriana.dam.satapp.service.UbicacionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/ubicacion")
@@ -24,6 +22,63 @@ public class UbicacionController {
 
     private final UbicacionService ubicacionService;
 
+
+    @GetMapping
+    @Operation(summary = "Muestra todas las ubicaciones")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se muestran las ubicaciones correctamente",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetUbicacionListDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "count": 2,
+                                                                            "results": [
+                                                                                "2º DAM",
+                                                                                "Aula 1"
+                                                                            ]
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se han encontrado ubicaciones",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Ubicación no encontrada",
+                                                                            "status": 404,
+                                                                            "detail": "No se han encontrado ubicaciones",
+                                                                            "instance": "/api/ubicacion"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public GetUbicacionListDto findAll() {
+
+        return GetUbicacionListDto.of(ubicacionService.findAll());
+    }
 
     @PostMapping("/admin/{idAdmin}/crear/{nombre}")
     @Operation(summary = "Crea una ubicación nueva")
