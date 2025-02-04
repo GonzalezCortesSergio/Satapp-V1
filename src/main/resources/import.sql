@@ -6,7 +6,7 @@ INSERT INTO categoria(id, nombre) VALUES(1, 'Ordenadores');
 
 ALTER SEQUENCE categoria_seq RESTART WITH 51;
 
-INSERT INTO ubicacion(id, nombre) VALUES(1, 'Aula 1');
+INSERT INTO ubicacion(id, nombre, deleted) VALUES(1, 'Aula 1', FALSE);
 
 ALTER SEQUENCE ubicacion_seq RESTART WITH 51;
 
