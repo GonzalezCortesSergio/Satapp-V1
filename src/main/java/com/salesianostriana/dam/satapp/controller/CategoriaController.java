@@ -1,8 +1,6 @@
 package com.salesianostriana.dam.satapp.controller;
 
-import com.salesianostriana.dam.satapp.dto.GetCategoriaCreadaDto;
-import com.salesianostriana.dam.satapp.model.Categoria;
-import com.salesianostriana.dam.satapp.model.Usuario;
+import com.salesianostriana.dam.satapp.dto.GetCategoriaDto;
 import com.salesianostriana.dam.satapp.service.CategoriaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -62,12 +60,13 @@ public class CategoriaController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = GetCategoriaCreadaDto.class),
+                                            schema = @Schema(implementation = GetCategoriaDto.class),
                                             examples = {
                                                     @ExampleObject(
                                                             value = """
                                                                         {
-                                                                            "nombre": "noseapaga"
+                                                                            "nombre": "noseapaga",
+                                                                            "categoriaPadre": null
                                                                         }
                                                                     """
                                                     )
@@ -100,9 +99,9 @@ public class CategoriaController {
                     )
             }
     )
-    public ResponseEntity<GetCategoriaCreadaDto> crearCategoria(@PathVariable Long idAdmin, @PathVariable String nombre){
+    public ResponseEntity<GetCategoriaDto> crearCategoria(@PathVariable Long idAdmin, @PathVariable String nombre){
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(GetCategoriaCreadaDto.of(categoriaService.crearCategoria(idAdmin,nombre)) );
+                .body(GetCategoriaDto.of(categoriaService.crearCategoria(idAdmin,nombre)) );
     }
 
 }
