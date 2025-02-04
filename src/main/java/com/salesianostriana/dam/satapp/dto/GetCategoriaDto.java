@@ -4,12 +4,20 @@ import com.salesianostriana.dam.satapp.model.Categoria;
 
 public record GetCategoriaDto(
         String nombre,
-        Categoria categoriaPadre
+        String categoriaPadre
 ) {
     public static GetCategoriaDto of(Categoria categoria){
+        if(categoria.getCategoriaPadre() == null ) {
+
+            return new GetCategoriaDto(
+                    categoria.getNombre(),
+                    " "
+            );
+        }
+
         return new GetCategoriaDto(
                 categoria.getNombre(),
-                categoria.getCategoriaPadre()
+                categoria.getCategoriaPadre().getNombre()
         );
     }
 }

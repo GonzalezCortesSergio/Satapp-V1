@@ -66,7 +66,7 @@ public class CategoriaController {
                                                             value = """
                                                                         {
                                                                             "nombre": "noseapaga",
-                                                                            "categoriaPadre": null
+                                                                            "categoriaPadre": " "
                                                                         }
                                                                     """
                                                     )
