@@ -70,7 +70,6 @@ public class UsuarioService {
 
     }
 
-    @Transactional
     public List<Usuario> findAll(Long idAdmin) {
 
         if (usuarioRepository.findByIdPas(idAdmin).isEmpty()){
@@ -86,7 +85,6 @@ public class UsuarioService {
         return result;
     }
 
-    @Transactional
     public Usuario findById(Long id, Long idUsuario) {
 
         if (usuarioRepository.findById(id).isEmpty()) {
