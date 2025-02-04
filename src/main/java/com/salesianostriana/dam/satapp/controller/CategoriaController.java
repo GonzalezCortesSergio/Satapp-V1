@@ -271,5 +271,49 @@ public class CategoriaController {
                 .toList();
     }
 
+    @DeleteMapping("/admin/{idAdmin}/delete/{nombre}")
+    @Operation(summary = "Se borra la categoria")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Se borra la categoria correctamente",
+                            content = {
+                                    @Content
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "No tienes los permisos para borrar la categoria",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Pas permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                            "instance": "/api/categoria/admin/2/delete/noseapaga"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public ResponseEntity<?> borrarCategoria(@PathVariable Long idAdmin, @PathVariable String nombre){
+
+        categoriaService.deleteByNombre(idAdmin, nombre);
+
+        return ResponseEntity.noContent().build();
+
+    }
+
 
 }

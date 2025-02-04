@@ -9,17 +9,20 @@ import com.salesianostriana.dam.satapp.repository.IncidenciaRepository;
 import com.salesianostriana.dam.satapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CategoriaService {
 
     private final UsuarioRepository usuarioRepository;
     private final CategoriaRepository categoriaRepository;
 
+    @Transactional(readOnly = false)
     public Categoria crearCategoria(Long id, String nombre){
 
         if (usuarioRepository.findByIdPas(id).isEmpty()){
@@ -40,6 +43,7 @@ public class CategoriaService {
 
     }
 
+    @Transactional(readOnly = false)
     public Categoria crearCategoriaHija(Long id, String nombre, String nombreHija){
 
         if (usuarioRepository.findByIdPas(id).isEmpty()){
@@ -77,4 +81,16 @@ public class CategoriaService {
         return result;
 
     }
+
+    @Transactional(readOnly = false)
+    public void deleteByNombre(Long id, String nombre){
+
+        if (usuarioRepository.findByIdPas(id).isEmpty()){
+            throw new PasPermisoDenegadoException("No se ha encontrado un usuario PAS con el id: %d".formatted(id));
+        }
+
+        categoriaRepository.deleteByNombre(nombre);
+
+    }
+
 }

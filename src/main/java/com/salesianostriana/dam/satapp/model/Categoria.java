@@ -2,6 +2,7 @@ package com.salesianostriana.dam.satapp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Where;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
+@Where(clause = "deleted=false")
 public class Categoria {
 
     @Id
@@ -34,6 +36,9 @@ public class Categoria {
             foreignKey = @ForeignKey(name = "fk_categoria_categoria_padre")
     )
     private Categoria categoriaPadre;
+
+    @Builder.Default
+    private boolean deleted = Boolean.FALSE;
 
     public void addCategoriaHija(Categoria categoriaHija){
         categoriaHija.setCategoriaPadre(this);
