@@ -8,6 +8,8 @@ import com.salesianostriana.dam.satapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UbicacionService {
@@ -21,8 +23,10 @@ public class UbicacionService {
         if(usuarioRepository.findByIdPas(idAdmin).isEmpty())
             throw new PasPermisoDenegadoException("No se ha encontrado un usuario PAS con el id: %d".formatted(idAdmin));
 
-        if(ubicacionRepository.findByNombre(nombreUbicacion).isPresent())
-            throw new NombreRepetidoException();
+        Optional<Ubicacion> ubicacionOptional = ubicacionRepository.findByNombre(nombreUbicacion);
+
+        if(ubicacionOptional.isPresent())
+            throw new NombreRepetidoException(ubicacionOptional.get());
 
         Ubicacion ubicacion = Ubicacion.builder()
                 .nombre(nombreUbicacion)
