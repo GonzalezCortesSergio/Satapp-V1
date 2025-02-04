@@ -8,11 +8,13 @@ import com.salesianostriana.dam.satapp.model.Incidencia;
 import com.salesianostriana.dam.satapp.repository.IncidenciaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class IncidenciaService {
 
     private final IncidenciaRepository incidenciaRepository;
@@ -36,6 +38,7 @@ public class IncidenciaService {
                 );
     }
 
+    @Transactional
     public Incidencia edit(Long idIncidencia, Long idUsuario, EditIncidenciaDto editIncidenciaDto) {
 
         Incidencia antigua = incidenciaRepository.findByUsuarioAndIdAbiertaOrPendiente(idUsuario, idIncidencia)
@@ -48,6 +51,7 @@ public class IncidenciaService {
         return antigua;
     }
 
+    @Transactional
     public void deleteById(Long idUsuario, Long idIncidencia) {
 
         Incidencia incidencia = findByIdAndUsuario(idUsuario, idIncidencia);
