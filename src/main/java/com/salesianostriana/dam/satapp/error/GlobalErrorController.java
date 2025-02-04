@@ -77,4 +77,18 @@ public class GlobalErrorController extends ResponseEntityExceptionHandler {
 
         return detail;
     }
+
+
+    //errores ubicación
+
+    @ExceptionHandler(NombreRepetidoException.class)
+    public ProblemDetail handleNombreRepetidoException(NombreRepetidoException exception) {
+
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+                exception.getMessage());
+
+        detail.setTitle("Nombre repetido");
+
+        return detail;
+    }
 }

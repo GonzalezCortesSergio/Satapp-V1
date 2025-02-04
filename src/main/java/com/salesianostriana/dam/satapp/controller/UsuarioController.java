@@ -1,7 +1,10 @@
 package com.salesianostriana.dam.satapp.controller;
 
+import com.salesianostriana.dam.satapp.dto.CreateHistoricoCursoDto;
 import com.salesianostriana.dam.satapp.dto.CreateUsuarioDto;
+import com.salesianostriana.dam.satapp.dto.GetAlumnoDto;
 import com.salesianostriana.dam.satapp.dto.GetUsuarioDto;
+import com.salesianostriana.dam.satapp.model.HistoricoCurso;
 import com.salesianostriana.dam.satapp.model.Usuario;
 import com.salesianostriana.dam.satapp.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -115,7 +118,7 @@ public class UsuarioController {
                         usuarioService.crearUsuario(idAdmin, createUsuarioDto, tipoUsuario, tipoPersonal));
     }
 
-    @PutMapping("c/{id}")
+    @PutMapping("/admin/{idAdmin}/editar/{id}")
     @Operation(summary = "Un usuario PAS edita otros usuarios")
     @ApiResponses(
             value = {
@@ -414,6 +417,90 @@ public class UsuarioController {
 
         usuarioService.deleteById(idUsuario, id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/admin/{idAdmin}/aniadirhistoricocurso/{idAlumno}")
+    @Operation(summary = "Añadir un historico curso")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "El usuario no tiene permiso para añadir un historico curso",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Pas permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                            "instance": "/api/usuario/admin/2/aniadirhistoricocurso/2"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se agrega el historico curso",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetAlumnoDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                    {
+                                                                        "nombre": "maria",
+                                                                        "username": "mariaA",
+                                                                        "listaHistorico": [
+                                                                            {
+                                                                                "curso": "1",
+                                                                                "cursoEscolar": "DAM"
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No existe el usuario al que se le intenta añadir el historico",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Usuario no encontrado",
+                                                                            "status": 404,
+                                                                            "detail": "No hay alumno con la id: 4",
+                                                                            "instance": "/api/usuario/admin/1/aniadirhistoricocurso/4"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public GetAlumnoDto aniadirHistoricoCurso(@PathVariable Long idAlumno, @PathVariable Long idAdmin,
+                                              @RequestBody CreateHistoricoCursoDto createHistoricoCursoDto){
+
+        return GetAlumnoDto.of(usuarioService.aniadirHistoricoCurso(idAlumno, idAdmin, createHistoricoCursoDto));
     }
 
 
