@@ -111,7 +111,31 @@ public class UsuarioController {
                     )
             }
     )
-    public ResponseEntity<Usuario>crearUsuario(@PathVariable Long idAdmin, @RequestBody CreateUsuarioDto createUsuarioDto,
+    public ResponseEntity<Usuario>crearUsuario(@PathVariable Long idAdmin,
+                                               @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                       description = "Usuario a crear",
+                                                       required = true,
+                                                       content = {
+                                                               @Content(
+                                                                       mediaType = "application/json",
+                                                                       schema = @Schema(implementation = CreateUsuarioDto.class),
+                                                                       examples = {
+                                                                               @ExampleObject(
+                                                                                       value = """
+                                                                                                {
+                                                                                                    "nombre": "maria",
+                                                                                                    "username": "mariaA",
+                                                                                                    "password": "1234",
+                                                                                                    "email": "a@a",
+                                                                                                    "role": "noAdmin"
+                                                                                                }
+                                                                                               """
+                                                                               )
+                                                                       }
+                                                               )
+                                                       }
+                                               )
+                                               @RequestBody CreateUsuarioDto createUsuarioDto,
                                                @PathVariable String tipoUsuario,@RequestParam(required = false) String tipoPersonal){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
@@ -197,7 +221,31 @@ public class UsuarioController {
                     )
             }
     )
-    public Usuario editarPas(@PathVariable Long idAdmin, @RequestBody CreateUsuarioDto createUsuarioDto, @PathVariable Long id){
+    public Usuario editarPas(@PathVariable Long idAdmin,
+                             @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                     description = "Datos a editar del usuario",
+                                     required = true,
+                                     content = {
+                                             @Content(
+                                                     mediaType = "application/json",
+                                                     schema = @Schema(implementation = CreateUsuarioDto.class),
+                                                     examples = {
+                                                             @ExampleObject(
+                                                                     value = """
+                                                                                {
+                                                                                    "nombre": "lucas",
+                                                                                    "username": "mariaA",
+                                                                                    "password": "1234",
+                                                                                    "email": "a@a",
+                                                                                    "role": "noAdmin"
+                                                                                }
+                                                                             """
+                                                             )
+                                                     }
+                                             )
+                                     }
+                             )
+                             @RequestBody CreateUsuarioDto createUsuarioDto, @PathVariable Long id){
         return usuarioService.editarUsuario(idAdmin, createUsuarioDto,id);
     }
 
@@ -498,6 +546,26 @@ public class UsuarioController {
             }
     )
     public GetAlumnoDto aniadirHistoricoCurso(@PathVariable Long idAlumno, @PathVariable Long idAdmin,
+                                              @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                      description = "Histórico Curso a añadir",
+                                                      required = true,
+                                                      content = {
+                                                              @Content(
+                                                                      mediaType = "application/json",
+                                                                      schema =  @Schema(implementation = CreateHistoricoCursoDto.class),
+                                                                      examples = {
+                                                                              @ExampleObject(
+                                                                                      value = """
+                                                                                                {
+                                                                                                    "curso": "1ºDAM",
+                                                                                                    "cursoEscolar": "2024/2025"
+                                                                                                }
+                                                                                              """
+                                                                              )
+                                                                      }
+                                                              )
+                                                      }
+                                              )
                                               @RequestBody CreateHistoricoCursoDto createHistoricoCursoDto){
 
         return GetAlumnoDto.of(usuarioService.aniadirHistoricoCurso(idAlumno, idAdmin, createHistoricoCursoDto));

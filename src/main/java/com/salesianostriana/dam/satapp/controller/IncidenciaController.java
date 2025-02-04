@@ -218,17 +218,26 @@ public class IncidenciaController {
             }
     )
     public GetIncidenciaDetailsDto editIncidencia(@PathVariable Long usuarioId, @PathVariable Long idIncidencia,
-                                                  @Schema(
-                                                          description = "Descripción a añadir",
-                                                          implementation = EditIncidenciaDto.class,
-                                                          examples = {
-                                                                  """
-                                                                                    {
-                                                                                        "descripcion": "Estaba fumando y tiré una colilla al ordenador pensando que no ardería y salió ardiendo, socorro"
-                                                                                    }
-                                                                                  """
+                                                  @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                          description = "Descripción a cambiar",
+                                                          required = true,
+                                                          content = {
+                                                                  @Content(
+                                                                          mediaType = "application/json",
+                                                                          schema = @Schema(implementation = EditIncidenciaDto.class),
+                                                                          examples = {
+                                                                                  @ExampleObject(
+                                                                                          value = """
+                                                                                                    {
+                                                                                                        "descripcion": "Estaba fumando y tiré una colilla al ordenador pensando que no ardería y salió ardiendo, socorro"
+                                                                                                    }
+                                                                                                  """
+                                                                                  )
+                                                                          }
+                                                                  )
                                                           }
-                                                  )@RequestBody EditIncidenciaDto incidenciaDto) {
+                                                  )
+                                                  @RequestBody EditIncidenciaDto incidenciaDto) {
 
         return GetIncidenciaDetailsDto.of(incidenciaService.edit(idIncidencia, usuarioId, incidenciaDto));
     }

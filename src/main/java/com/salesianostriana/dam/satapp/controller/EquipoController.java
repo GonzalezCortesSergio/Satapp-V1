@@ -142,16 +142,27 @@ public class EquipoController {
             }
     )
     public ResponseEntity<Equipo> crearEquipo(@PathVariable Long idAdmin,
-                                              @Schema(
-                                                      description = "Equipo a añadir",
-                                                      implementation = CreateEquipoDto.class,
-                                                      example= """
-                                                                {
-                                                                    "nombre": "Aire acondicionado",
-                                                                    "caracteristicas": "Un aire acondicionado para que los de DAM en verano no pasen calor"
-                                                                }
-                                                              """
-                                              )@RequestBody CreateEquipoDto equipoDto) {
+                                              @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                      description = "Equipo a crear",
+                                                      required = true,
+                                                      content = {
+                                                              @Content(
+                                                                      mediaType = "application/json",
+                                                                      schema = @Schema(implementation = CreateEquipoDto.class),
+                                                                      examples = {
+                                                                              @ExampleObject(
+                                                                                      value = """
+                                                                                                {
+                                                                                                    "nombre": "Aire acondicionado",
+                                                                                                    "caracteristicas": "Un aire acondicionado para que los de DAM en verano no pasen calor"
+                                                                                                }
+                                                                                              """
+                                                                              )
+                                                                      }
+                                                              )
+                                                      }
+                                              )
+                                              @RequestBody CreateEquipoDto equipoDto) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(equipoService.save(idAdmin, equipoDto));
@@ -232,9 +243,27 @@ public class EquipoController {
             }
     )
     public Equipo edit(@PathVariable Long idAdmin, @PathVariable Long idEquipo,
-                       @Schema(description = "Nombre y descripción a cambiar",
-                       implementation = CreateEquipoDto.class
-                       )@RequestBody CreateEquipoDto equipoDto) {
+                       @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                               description = "Datos a editar del equipo",
+                               required = true,
+                               content = {
+                                       @Content(
+                                               mediaType = "application/json",
+                                               schema = @Schema(implementation = CreateEquipoDto.class),
+                                               examples = {
+                                                       @ExampleObject(
+                                                               value = """
+                                                                        {
+                                                                            "nombre": "Portátil",
+                                                                            "caracteristicas": "Portátil to wapo pa los nenes de primero"
+                                                                        }
+                                                                       """
+                                                       )
+                                               }
+                                       )
+                               }
+                       )
+                       @RequestBody CreateEquipoDto equipoDto) {
 
         return equipoService.edit(idAdmin, idEquipo, equipoDto);
     }
