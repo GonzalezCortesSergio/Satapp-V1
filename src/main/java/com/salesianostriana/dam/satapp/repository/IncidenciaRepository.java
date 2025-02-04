@@ -2,6 +2,7 @@ package com.salesianostriana.dam.satapp.repository;
 
 import com.salesianostriana.dam.satapp.model.Estado;
 import com.salesianostriana.dam.satapp.model.Incidencia;
+import com.salesianostriana.dam.satapp.model.Nota;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -38,4 +39,15 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
             AND i.estado IN ('ABIERTA', 'PENDIENTE')
             """)
     Optional<Incidencia> findByUsuarioAndIdAbiertaOrPendiente(Long idUsuario, Long idIncidencia);
+
+    @Query("""
+        SELECT n
+        FROM Nota n
+        WHERE n.id = :idNota
+        AND n.incidencia.id = :idIncidencia
+        AND n.incidencia.usuario.id = :idUsuario
+        AND n.incidencia.estado = 'ABIERTA'
+        """)
+    Optional<Nota> findByIdAndIncidenciaAndUsuario(Long idNota, Long idIncidencia, Long idUsuario);
+
 }
