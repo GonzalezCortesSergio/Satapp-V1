@@ -35,6 +35,11 @@ public class Categoria {
     )
     private Categoria categoriaPadre;
 
+    public void addCategoriaHija(Categoria categoriaHija){
+        categoriaHija.setCategoriaPadre(this);
+        categoriasHijas.add(categoriaHija);
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
