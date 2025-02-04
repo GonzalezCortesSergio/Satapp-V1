@@ -38,4 +38,13 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
             AND i.estado IN ('ABIERTA', 'PENDIENTE')
             """)
     Optional<Incidencia> findByUsuarioAndIdAbiertaOrPendiente(Long idUsuario, Long idIncidencia);
+
+    @Query("""
+            SELECT i
+            FROM Incidencia i
+            WHERE i.usuario.id = :idUsuario
+            AND i.id = :idIncidencia
+            AND i.estado != 'CERRADA'
+            """)
+    Optional<Incidencia> findByUsuarioAndIdNotCerrada(Long idUsuario, Long idIncidencia);
 }

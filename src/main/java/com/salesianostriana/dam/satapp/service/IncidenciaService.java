@@ -1,15 +1,18 @@
 package com.salesianostriana.dam.satapp.service;
 
+import com.salesianostriana.dam.satapp.dto.CreateNotaDto;
 import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotAbiertaException;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotFoundException;
 import com.salesianostriana.dam.satapp.model.Estado;
 import com.salesianostriana.dam.satapp.model.Incidencia;
+import com.salesianostriana.dam.satapp.model.Nota;
 import com.salesianostriana.dam.satapp.repository.IncidenciaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -63,5 +66,24 @@ public class IncidenciaService {
         incidencia.setUbicacion(null);
 
         incidenciaRepository.deleteById(idIncidencia);
+    }
+
+    @Transactional
+    public Incidencia addNota(Long idUsuario, Long idIncidencia, CreateNotaDto notaDto) {
+
+        return incidenciaRepository.findByUsuarioAndIdNotCerrada(idUsuario, idIncidencia)
+                .map(incidencia -> {
+
+
+                    incidencia.addNota(
+                            Nota.builder()
+                                    .fecha(LocalDate.now())
+                                    .contenido(notaDto.contenido())
+                                    .autor(incidencia.getUsuario().getNombre())
+                                    .build()
+                    );
+
+                    return incidenciaRepository.save(incidencia);
+                }).orElseThrow(() -> new IncidenciaNotFoundException(idUsuario, idIncidencia));
     }
 }
