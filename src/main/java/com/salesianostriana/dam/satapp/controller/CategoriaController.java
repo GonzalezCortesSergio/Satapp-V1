@@ -104,4 +104,105 @@ public class CategoriaController {
                 .body(GetCategoriaDto.of(categoriaService.crearCategoria(idAdmin,nombre)) );
     }
 
+    @PostMapping("admin/{idAdmin}/crear/{nombre}/{nombreHija}")
+    @Operation(summary = "Solo un usuario PAS puede crear categorias hijas")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "El usuario no tiene permiso para crear una categoría hija",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Pas permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                            "instance": "/api/categoria/admin/2/crear/noseapaga/noreinicia"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Se ha creado la categoría hija",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetCategoriaDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "nombre": "noreinicia",
+                                                                            "categoriaPadre": "noseapaga"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Esta categoria ya existe",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Nombre repetido",
+                                                                            "status": 400,
+                                                                            "detail": "Esta categoría ya existe",
+                                                                            "instance": "/api/categoria/admin/1/crear/noseapaga/noreinicia"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No existe la categoria padre",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Categoria no encontrada",
+                                                                            "status": 404,
+                                                                            "detail": "No se ha encontrado ninguna categoría con ese nombre",
+                                                                            "instance": "/api/categoria/admin/1/crear/noseapaga/noreinicia"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public ResponseEntity<GetCategoriaDto> crearCategoriaHija(@PathVariable Long idAdmin, @PathVariable String nombre,
+                                                              @PathVariable String nombreHija){
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(GetCategoriaDto.of(categoriaService.crearCategoriaHija(idAdmin, nombre, nombreHija)));
+    }
+
 }
