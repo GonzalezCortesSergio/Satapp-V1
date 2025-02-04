@@ -52,4 +52,13 @@ public class EquipoService {
                 })
                 .orElseThrow(() -> new EquipoNotFoundException(idEquipo));
     }
+
+    public void remove(Long idAdmin, Long idEquipo) {
+
+        if(usuarioRepository.findByIdPas(idAdmin).isEmpty())
+            throw new PasPermisoDenegadoException("No se ha encontrado un usuario PAS con el id: %d".formatted(idAdmin));
+
+
+        equipoRepository.deleteById(idEquipo);
+    }
 }
