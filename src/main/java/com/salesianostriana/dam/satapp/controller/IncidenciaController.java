@@ -373,7 +373,27 @@ public class IncidenciaController {
                    )
            }
     )
-    public GetIncidenciaDetailsDto addNota(@PathVariable Long idIncidencia, @PathVariable Long idUsuario, @RequestBody CreateNotaDto notaDto) {
+    public GetIncidenciaDetailsDto addNota(@PathVariable Long idIncidencia, @PathVariable Long idUsuario,
+                                           @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                   description = "Contenido de la nota a añadir",
+                                                   required = true,
+                                                   content = {
+                                                           @Content(
+                                                                   mediaType = "application/json",
+                                                                   schema = @Schema(implementation = CreateNotaDto.class),
+                                                                   examples = {
+                                                                           @ExampleObject(
+                                                                                   value = """
+                                                                                            {
+                                                                                                "contenido": "Ha dejado de arder, pero está todo chamuscao"
+                                                                                            }
+                                                                                           """
+                                                                           )
+                                                                   }
+                                                           )
+                                                   }
+                                           )
+                                           @RequestBody CreateNotaDto notaDto) {
 
         return GetIncidenciaDetailsDto.of(incidenciaService.addNota(idUsuario, idIncidencia, notaDto));
     }
