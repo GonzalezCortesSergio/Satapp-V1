@@ -173,6 +173,29 @@ public class CategoriaController {
                                             }
                                     )
                             }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No existe la categoria padre",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Categoria no encontrada",
+                                                                            "status": 404,
+                                                                            "detail": "No se ha encontrado ninguna categoría con ese nombre",
+                                                                            "instance": "/api/categoria/admin/1/crear/noseapaga/noreinicia"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
                     )
             }
     )
