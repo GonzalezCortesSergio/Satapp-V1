@@ -6,6 +6,7 @@ import com.salesianostriana.dam.satapp.error.UbicacionNotFoundException;
 import com.salesianostriana.dam.satapp.model.Ubicacion;
 import com.salesianostriana.dam.satapp.repository.UbicacionRepository;
 import com.salesianostriana.dam.satapp.repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@org.springframework.transaction.annotation.Transactional(readOnly = true)
 public class UbicacionService {
 
     private final UbicacionRepository ubicacionRepository;
@@ -47,6 +49,7 @@ public class UbicacionService {
         return ubicacionRepository.save(ubicacion);
     }
 
+    @Transactional
     public void deleteByNombre(Long idAdmin, String nombreUbicacion) {
 
         if(usuarioRepository.findByIdPas(idAdmin).isEmpty())

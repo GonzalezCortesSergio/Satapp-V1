@@ -18,7 +18,6 @@ public interface UbicacionRepository extends JpaRepository<Ubicacion, Long> {
             """)
     Optional<Ubicacion> findByNombre(String nombre);
 
-    @Transactional
     @Modifying
     @Query("UPDATE Ubicacion u SET u.deleted = true WHERE u.nombre= :nombre")
     void deleteByNombre(String nombre);
