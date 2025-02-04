@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.satapp.controller;
 
 import com.salesianostriana.dam.satapp.dto.GetCategoriaDto;
+import com.salesianostriana.dam.satapp.dto.GetUsuarioDto;
 import com.salesianostriana.dam.satapp.service.CategoriaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,10 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/categoria")
@@ -204,5 +204,72 @@ public class CategoriaController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(GetCategoriaDto.of(categoriaService.crearCategoriaHija(idAdmin, nombre, nombreHija)));
     }
+
+    @GetMapping()
+    @Operation(summary = "Todos los usuarios pueden ver la lista de categorias")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No hay ninguna categoría",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Categoria no encontrada",
+                                                                            "status": 404,
+                                                                            "detail": "No se ha encontrado ninguna categoría",
+                                                                            "instance": "/api/categoria"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se ven todos las categorías",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetCategoriaDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        [
+                                                                            {
+                                                                                "nombre": "Ordenadores",
+                                                                                "categoriaPadre": " "
+                                                                            },
+                                                                            {
+                                                                                "nombre": "noseapaga",
+                                                                                "categoriaPadre": " "
+                                                                            },
+                                                                            {
+                                                                                "nombre": "noreinicia",
+                                                                                "categoriaPadre": "noseapaga"
+                                                                            }
+                                                                        ]
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public List<GetCategoriaDto> findAll(){
+        return categoriaService.findAll()
+                .stream()
+                .map(GetCategoriaDto::of)
+                .toList();
+    }
+
 
 }

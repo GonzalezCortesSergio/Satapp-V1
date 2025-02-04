@@ -10,6 +10,7 @@ import com.salesianostriana.dam.satapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,7 +47,7 @@ public class CategoriaService {
         }
 
         Categoria categoriaPadre = categoriaRepository.findByNombre(nombre)
-                .orElseThrow(CategoriaNotFoundException::new);
+                .orElseThrow(() -> new CategoriaNotFoundException(nombre));
 
         Optional<Categoria> categoriaOptional = categoriaRepository.findByNombre(nombreHija);
 
@@ -65,4 +66,15 @@ public class CategoriaService {
         return categoriaRepository.save(categoria);
     }
 
+    public List<Categoria> findAll(){
+
+        List<Categoria> result = categoriaRepository.findAll();
+
+        if (result.isEmpty()){
+            throw new CategoriaNotFoundException();
+        }
+
+        return result;
+
+    }
 }
