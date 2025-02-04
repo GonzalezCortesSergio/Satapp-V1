@@ -9,6 +9,7 @@ import com.salesianostriana.dam.satapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,5 +39,15 @@ public class CategoriaService {
 
     }
 
+    public List<Categoria> findAll(){
 
+        List<Categoria> result = categoriaRepository.findAll();
+
+        if (result.isEmpty()){
+            throw new
+        }
+
+        return
+
+    }
 }
