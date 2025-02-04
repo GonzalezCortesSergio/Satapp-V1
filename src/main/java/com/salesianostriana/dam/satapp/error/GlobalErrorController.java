@@ -91,4 +91,14 @@ public class GlobalErrorController extends ResponseEntityExceptionHandler {
 
         return detail;
     }
+
+    @ExceptionHandler(CategoriaNotFoundException.class)
+    public ProblemDetail handleCategoriaNotFoundException(CategoriaNotFoundException exception){
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,
+                exception.getMessage());
+        detail.setTitle("Categoria no encontrada");
+
+        return detail;
+    }
+
 }
