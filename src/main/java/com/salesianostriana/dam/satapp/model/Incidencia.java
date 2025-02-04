@@ -75,6 +75,20 @@ public class Incidencia {
     private Ubicacion ubicacion;
 
 
+    //HELPER
+
+    public void addNota(Nota nota) {
+
+        nota.setIncidencia(this);
+        this.listaNotas.add(nota);
+    }
+
+    public void deleteNota(Nota nota) {
+        this.listaNotas.remove(nota);
+        nota.setIncidencia(null);
+    }
+
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

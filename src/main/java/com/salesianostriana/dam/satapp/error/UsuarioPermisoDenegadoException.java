@@ -4,4 +4,7 @@ public class UsuarioPermisoDenegadoException extends RuntimeException {
     public UsuarioPermisoDenegadoException(String message) {
         super(message);
     }
+    public UsuarioPermisoDenegadoException() {
+        super("Su usuario no tiene permiso");
+    }
 }
