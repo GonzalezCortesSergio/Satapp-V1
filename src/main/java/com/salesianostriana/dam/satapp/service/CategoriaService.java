@@ -55,9 +55,12 @@ public class CategoriaService {
         }
 
         Categoria categoria = Categoria.builder()
-                .categoriaPadre(categoriaPadre)
                 .nombre(nombreHija)
                 .build();
+
+        categoriaPadre.addCategoriaHija(categoria);
+
+        categoriaRepository.save(categoriaPadre);
 
         return categoriaRepository.save(categoria);
     }
