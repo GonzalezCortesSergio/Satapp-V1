@@ -213,7 +213,110 @@ public class IncidenciaController {
         return GetIncidenciaListDto.of(incidenciaService.findAllByTecnico(idTecnico));
     }
 
-    @Operation(summary = "Se buscan todas las incidencias que se encuentran",
+    @Operation(summary = "Se ven los detalles de una incidencia con los técnicos que la gestionan")
+    @ApiResponses(
+        value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Se ven los detalles correctamente",
+                        content = {
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = GetIncidenciaDetailsAdminDto.class),
+                                        examples = {
+                                                @ExampleObject(
+                                                        value = """
+                                                                    {
+                                                                        "fecha": "2025-01-28",
+                                                                        "titulo": "Ordenador ardiendo",
+                                                                        "descripcion": "No sÃ©, el ordenador estÃ¡ ardiendo socorro ayuda ya porfavor",
+                                                                        "estado": "ABIERTA",
+                                                                        "urgencia": 5,
+                                                                        "categoria": "Ordenadores",
+                                                                        "notas": [],
+                                                                        "equipo": {
+                                                                            "id": 1,
+                                                                            "nombre": "Ordenador",
+                                                                            "caracteristicas": "Un ordenador to wapo",
+                                                                            "ubicacion": null,
+                                                                            "deleted": false
+                                                                        },
+                                                                        "ubicacion": {
+                                                                            "id": 1,
+                                                                            "nombre": "Aula 1",
+                                                                            "deleted": false
+                                                                        },
+                                                                        "tecnicosGestionan": [
+                                                                            {
+                                                                                "nombre": "Lucas",
+                                                                                "username": "lucas_martinez123",
+                                                                                "email": "lucas.martinez23@triana.salesianos.edu",
+                                                                                "role": "",
+                                                                                "tipoUsuario": "técnico"
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                """
+                                                )
+                                        }
+                                )
+                        }
+                ),
+                @ApiResponse(
+                        responseCode = "401",
+                        description = "No tienes los permisos para ver los detalles",
+                        content = {
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ProblemDetail.class),
+                                        examples = {
+                                                @ExampleObject(
+                                                        value = """
+                                                                    {
+                                                                        "type": "about:blank",
+                                                                        "title": "Pas permiso no concedido",
+                                                                        "status": 401,
+                                                                        "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                        "instance": "/api/incidencia/admin/2/detalles/1"
+                                                                    }
+                                                                """
+                                                )
+                                        }
+                                )
+                        }
+                ),
+                @ApiResponse(
+                        responseCode = "404",
+                        description = "No se ha encontrado la incidencia",
+                        content = {
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ProblemDetail.class),
+                                        examples = {
+                                                @ExampleObject(
+                                                        value = """
+                                                                    {
+                                                                        "type": "about:blank",
+                                                                        "title": "Incidencia no encontrada",
+                                                                        "status": 404,
+                                                                        "detail": "No se han encontrado incidencias para el usuario con ID: 2",
+                                                                        "instance": "/api/incidencia/admin/1/detalles/2"
+                                                                    }
+                                                                """
+                                                )
+                                        }
+                                )
+                        }
+                )
+        }
+    )
+    @GetMapping("/admin/{idAdmin}/detalles/{idIncidencia}")
+    public GetIncidenciaDetailsAdminDto findByIdDetailsTecnicosGestionan(@PathVariable Long idAdmin, @PathVariable Long idIncidencia) {
+
+        return GetIncidenciaDetailsAdminDto.of(incidenciaService.findByIdAdmin(idAdmin, idIncidencia));
+    }
+
+    @Operation(summary = "Se buscan todas las incidencias que se no se encuentran cerradas",
     description = """
             El método tiene un parámetro de petición llamado filtro, cuyo valor predeterminado es 'no'. En caso de querer filtrar por nombre de categoría,\
              se tendrá que indicar con el patrón 'categoria-nombrecategoria'.
