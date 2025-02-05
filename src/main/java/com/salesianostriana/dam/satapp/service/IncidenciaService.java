@@ -4,11 +4,13 @@ import com.salesianostriana.dam.satapp.dto.CreateNotaDto;
 import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotAbiertaException;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotFoundException;
+import com.salesianostriana.dam.satapp.error.PasPermisoDenegadoException;
 import com.salesianostriana.dam.satapp.error.UsuarioPermisoDenegadoException;
 import com.salesianostriana.dam.satapp.model.Estado;
 import com.salesianostriana.dam.satapp.model.Incidencia;
 import com.salesianostriana.dam.satapp.model.Nota;
 import com.salesianostriana.dam.satapp.repository.IncidenciaRepository;
+import com.salesianostriana.dam.satapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ import java.util.Optional;
 public class IncidenciaService {
 
     private final IncidenciaRepository incidenciaRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public List<Incidencia> findAllByUsuario(Long idUsuario) {
 
@@ -102,5 +105,72 @@ public class IncidenciaService {
                            });
                    return incidenciaRepository.save(incidencia);
                 }).orElseThrow(() -> new IncidenciaNotFoundException(idUsuario, idIncidencia));
+    }
+
+
+    public List<Incidencia> findAll(Long idAdmin, String filtro, boolean ordenarFecha) {
+
+        if (usuarioRepository.findByIdPas(idAdmin).isEmpty())
+            throw new PasPermisoDenegadoException(idAdmin);
+
+        String[] tipoFiltro = filtro.split("-");
+        List<Incidencia> result;
+        if (tipoFiltro.length > 1) {
+
+            switch (tipoFiltro[0]) {
+                case "categoria":
+                    result = incidenciaRepository.findAllByCategoriaNombre(tipoFiltro[1]);
+
+                    if (result.isEmpty())
+                        throw new IncidenciaNotFoundException();
+
+                    return result;
+
+                case "estado":
+
+                    result = incidenciaRepository.findAllByEstado(tipoFiltro[1].toUpperCase());
+
+                    if (result.isEmpty())
+                        throw new IncidenciaNotFoundException();
+
+                    return result;
+
+                case "ubicacion":
+
+                    result = incidenciaRepository.findAllByUbicacion(tipoFiltro[1]);
+
+                    if (result.isEmpty())
+                        throw new IncidenciaNotFoundException();
+
+                    return result;
+
+                default:
+
+                    if (ordenarFecha)
+                        result = incidenciaRepository.findAllOrderByFecha();
+
+                    else
+                        result = incidenciaRepository.findAll();
+
+                    if (result.isEmpty())
+                        throw new IncidenciaNotFoundException();
+
+                    return result;
+            }
+
+        }
+
+        if (ordenarFecha)
+            result = incidenciaRepository.findAllOrderByFecha();
+
+        else
+            result = incidenciaRepository.findAll();
+
+        if (result.isEmpty())
+            throw new IncidenciaNotFoundException();
+
+        return result;
+
+
     }
 }

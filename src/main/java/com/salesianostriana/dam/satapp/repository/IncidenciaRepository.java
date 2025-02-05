@@ -63,4 +63,31 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
             ORDER BY i.urgencia DESC, i.fecha DESC
             """)
     List<Incidencia> findAllOrderByFecha();
+
+
+    @Query("""
+            SELECT i
+            FROM Incidencia i
+            WHERE i.categoria.nombre = :nombreCategoria
+            ORDER BY i.urgencia DESC
+            """)
+    List<Incidencia> findAllByCategoriaNombre(String nombreCategoria);
+
+
+    @Query("""
+            SELECT i
+            FROM Incidencia i
+            WHERE CAST(i.estado AS string) = :estado
+            ORDER BY i.urgencia DESC
+            """)
+    List<Incidencia> findAllByEstado(String estado);
+
+
+    @Query("""
+            SELECT i
+            FROM Incidencia i
+            WHERE i.ubicacion.nombre = :nombreUbicacion
+            ORDER BY i.urgencia DESC
+            """)
+    List<Incidencia> findAllByUbicacion(String nombreUbicacion);
 }
