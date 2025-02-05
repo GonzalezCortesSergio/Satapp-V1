@@ -2,15 +2,10 @@ package com.salesianostriana.dam.satapp.service;
 
 import com.salesianostriana.dam.satapp.dto.CreateNotaDto;
 import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
-import com.salesianostriana.dam.satapp.error.IncidenciaNotAbiertaException;
-import com.salesianostriana.dam.satapp.error.IncidenciaNotFoundException;
-import com.salesianostriana.dam.satapp.error.PasPermisoDenegadoException;
-import com.salesianostriana.dam.satapp.error.TecnicoPermisoDenegadoException;
-import com.salesianostriana.dam.satapp.error.UsuarioPermisoDenegadoException;
-import com.salesianostriana.dam.satapp.model.Estado;
-import com.salesianostriana.dam.satapp.model.Incidencia;
-import com.salesianostriana.dam.satapp.model.Nota;
+import com.salesianostriana.dam.satapp.error.*;
+import com.salesianostriana.dam.satapp.model.*;
 import com.salesianostriana.dam.satapp.repository.IncidenciaRepository;
+import com.salesianostriana.dam.satapp.repository.IncidenciaTecnicoRepository;
 import com.salesianostriana.dam.satapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +22,7 @@ public class IncidenciaService {
 
     private final IncidenciaRepository incidenciaRepository;
     private final UsuarioRepository usuarioRepository;
+    private final IncidenciaTecnicoRepository incidenciaTecnicoRepository;
 
     public List<Incidencia> findAllByUsuario(Long idUsuario) {
 
@@ -195,17 +191,31 @@ public class IncidenciaService {
 
     }
 
-    public Incidencia gestionarIncidencia(Long idTecnico, Long idIncidencia){
+    @Transactional
+    public Incidencia seleccionarIncidencia(Long idTecnico, Long idIncidencia) {
 
-        if (usuarioRepository.findByIdTecnico(idTecnico).isEmpty()){
-            throw new TecnicoPermisoDenegadoException();
-        }
+        Tecnico tecnico = usuarioRepository.findByIdTecnico(idTecnico)
+                .orElseThrow(() -> new TecnicoPermisoDenegadoException());
 
-        if (incidenciaRepository.findByIdNoCerrada(idIncidencia).isEmpty()){
-            throw new IncidenciaNotFoundException();
-        }
-            
+        if (incidenciaTecnicoRepository.findByIdIncidenciaAndIdTecnico(idIncidencia, idTecnico).isPresent())
+            throw new IncidenciaTecnicoExistsException(idTecnico, idIncidencia);
 
+        Incidencia incidencia = incidenciaRepository.findById(idIncidencia)
+                .orElseThrow(() -> new IncidenciaNotFoundException(idIncidencia));
+
+
+        IncidenciaTecnico it = new IncidenciaTecnico();
+
+        it.addToIncidencia(incidencia);
+        it.addToTecnico(tecnico);
+
+        if(incidenciaTecnicoRepository.findByIdIncidenciaTecnicoResponsable(idIncidencia).isEmpty())
+            it.setTecnicoResponsable(true);
+
+
+        incidenciaTecnicoRepository.save(it);
+
+        return incidencia;
     }
 
 }
