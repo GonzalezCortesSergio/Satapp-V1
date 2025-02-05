@@ -26,7 +26,7 @@ public class UbicacionController {
     private final UbicacionService ubicacionService;
 
 
-    @GetMapping
+
     @Operation(summary = "Muestra todas las ubicaciones")
     @ApiResponses(
             value = {
@@ -78,12 +78,13 @@ public class UbicacionController {
                     )
             }
     )
+    @GetMapping
     public GetUbicacionListDto findAll() {
 
         return GetUbicacionListDto.of(ubicacionService.findAll());
     }
 
-    @PostMapping("/admin/{idAdmin}/crear/{nombre}")
+
     @Operation(summary = "Crea una ubicación nueva")
     @ApiResponses(
             value = {
@@ -155,12 +156,13 @@ public class UbicacionController {
                     )
             }
     )
+    @PostMapping("/admin/{idAdmin}/crear/{nombre}")
     public ResponseEntity<Ubicacion> save(@PathVariable Long idAdmin, @PathVariable String nombre) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ubicacionService.save(idAdmin,nombre));
     }
 
-    @DeleteMapping("/admin/{idAdmin}/delete/{nombre}")
+
     @Operation(summary = "Se borra una ubicación por nombre")
     @ApiResponses(
             value = {
@@ -196,6 +198,7 @@ public class UbicacionController {
                     )
             }
     )
+    @DeleteMapping("/admin/{idAdmin}/delete/{nombre}")
     public ResponseEntity<?> deleteByNombre(@PathVariable Long idAdmin, @PathVariable String nombre) {
 
         ubicacionService.deleteByNombre(idAdmin, nombre);

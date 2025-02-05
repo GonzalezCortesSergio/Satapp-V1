@@ -11,12 +11,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/incidencia")
@@ -27,7 +25,124 @@ public class IncidenciaController {
 
     private final IncidenciaService incidenciaService;
 
-
+    
+    @Operation(summary = "Un técnico puede ver la lista de incidencias no cerradas y las puede " +
+            "filtar por categoría",
+            description = "El método tiene un parámetro de petición llamado nombreCategoria. Si se quiere filtrar " +
+                    "por alguna de las categorías se debera indicar")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No hay ninguna incidencia",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                    {
+                                                                         "type": "about:blank",
+                                                                         "title": "Incidencia no encontrada",
+                                                                         "status": 404,
+                                                                         "detail": "No se han encontrado incidencias",
+                                                                         "instance": "/api/incidencia/tecnico/2/categoria"
+                                                                    }
+                                                                   """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "El usuario no tiene permiso para ver las incidencias",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                    {
+                                                                         "type": "about:blank",
+                                                                         "title": "Tecnico permiso no concedido",
+                                                                         "status": 401,
+                                                                         "detail": "El usuario debe de ser un técnico para acceder",
+                                                                         "instance": "/api/incidencia/tecnico/1/categoria"
+                                                                     }
+                                                                   """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "El técnico puede acceder a todas las incidencias filtradas",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetIncidenciaListDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                    {
+                                                                         "count": 1,
+                                                                         "results": [
+                                                                             {
+                                                                                 "id": 1,
+                                                                                 "titulo": "Ordenador ardiendo",
+                                                                                 "descripcion": "No sé, el ordenador está ardiendo socorro ayuda ya porfavor",
+                                                                                 "urgencia": 5
+                                                                             }
+                                                                         ]
+                                                                     }
+                                                                   """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "El técnico puede acceder a todas las incidencias",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetIncidenciaListDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                    {
+                                                                         "count": 1,
+                                                                         "results": [
+                                                                             {
+                                                                                 "id": 1,
+                                                                                 "titulo": "Ordenador ardiendo",
+                                                                                 "descripcion": "No sé, el ordenador está ardiendo socorro ayuda ya porfavor",
+                                                                                 "urgencia": 5
+                                                                             }
+                                                                         ]
+                                                                     }
+                                                                   """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    @GetMapping("/tecnico/{idTecnico}/categoria")
+    public GetIncidenciaListDto findIncidenciasNoCerradas(
+            @Parameter(
+                    description = "valor para filtrar por categoria",
+                    schema = @Schema(type = "string")
+            )
+            @RequestParam(required = false, defaultValue = "no") String nombreCategoria, @PathVariable Long idTecnico){
+        return GetIncidenciaListDto.of(incidenciaService.findAllTecnico(nombreCategoria, idTecnico));
+    }
 
     @Operation(summary = "Se buscan todas las incidencias que se encuentran",
     description = """
@@ -139,7 +254,7 @@ public class IncidenciaController {
         return GetIncidenciaListDto.of(incidenciaService.findAll(idAdmin, filtro, ordenarFecha));
     }
 
-    @GetMapping("/usuario/{idUsuario}")
+
     @Operation(summary = "Se buscan todas las incidencias abiertas por un usuario que no estén en estado CERRADA")
     @ApiResponses(
             value = {
@@ -195,12 +310,13 @@ public class IncidenciaController {
                     )
             }
     )
+    @GetMapping("/usuario/{idUsuario}")
     public GetIncidenciaListDto findIncidenciasByUsuario(@PathVariable Long idUsuario) {
 
         return GetIncidenciaListDto.of(incidenciaService.findAllByUsuario(idUsuario));
     }
 
-    @GetMapping("/usuario/{idUsuario}/detalles/{idIncidencia}")
+
     @Operation(summary = "Se muestran los detalles de una incidencia seleccionada por el usuario")
     @ApiResponses(
             value = {
@@ -259,12 +375,13 @@ public class IncidenciaController {
                     )
             }
     )
+    @GetMapping("/usuario/{idUsuario}/detalles/{idIncidencia}")
     public GetIncidenciaDetailsDto findIncidenciaByUsuarioAndId(@PathVariable Long idUsuario, @PathVariable Long idIncidencia) {
 
         return GetIncidenciaDetailsDto.of(incidenciaService.findByIdAndUsuario(idUsuario, idIncidencia));
     }
 
-    @PutMapping("/usuario/{usuarioId}/editar/{idIncidencia}")
+
     @Operation(summary = "Un usuario edita la descripción de una incidencia que esté ABIERTA o PENDIENTE")
     @ApiResponses(
             value = {
@@ -326,6 +443,7 @@ public class IncidenciaController {
                     )
             }
     )
+    @PutMapping("/usuario/{usuarioId}/editar/{idIncidencia}")
     public GetIncidenciaDetailsDto editIncidencia(@PathVariable Long usuarioId, @PathVariable Long idIncidencia,
                                                   @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                           description = "Descripción a cambiar",
@@ -351,7 +469,7 @@ public class IncidenciaController {
         return GetIncidenciaDetailsDto.of(incidenciaService.edit(idIncidencia, usuarioId, incidenciaDto));
     }
 
-    @DeleteMapping("/usuario/{idUsuario}/borrar/{idIncidencia}")
+
     @Operation(summary = "Se borra la incidencia de un usuario que se encuentra abierta")
     @ApiResponses(
             value = {
@@ -405,6 +523,7 @@ public class IncidenciaController {
                     )
             }
     )
+    @DeleteMapping("/usuario/{idUsuario}/borrar/{idIncidencia}")
     public ResponseEntity<?> deleteByIdIncidenciaAbierta(@PathVariable Long idUsuario, @PathVariable Long idIncidencia) {
 
         incidenciaService.deleteById(idUsuario, idIncidencia);
@@ -412,7 +531,7 @@ public class IncidenciaController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{idIncidencia}/usuario/{idUsuario}/addNota")
+
     @Operation(summary = "Se añade una nota a una incidencia que no está cerrada")
     @ApiResponses(
            value = {
@@ -485,6 +604,7 @@ public class IncidenciaController {
                    )
            }
     )
+    @PutMapping("/{idIncidencia}/usuario/{idUsuario}/addNota")
     public GetIncidenciaDetailsDto addNota(@PathVariable Long idIncidencia, @PathVariable Long idUsuario,
                                            @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                    description = "Contenido de la nota a añadir",
@@ -510,7 +630,7 @@ public class IncidenciaController {
         return GetIncidenciaDetailsDto.of(incidenciaService.addNota(idUsuario, idIncidencia, notaDto));
     }
 
-    @PutMapping("/{idIncidencia}/usuario/{idUsuario}/borrarnota/{idNota}")
+
     @Operation(summary = "Se borra una nota a una incidencia que no está cerrada")
     @ApiResponses(
             value = {
@@ -576,6 +696,7 @@ public class IncidenciaController {
                     )
             }
     )
+    @PutMapping("/{idIncidencia}/usuario/{idUsuario}/borrarnota/{idNota}")
     public GetIncidenciaDetailsDto eliminarNota(@PathVariable Long idUsuario, @PathVariable Long idIncidencia,
                                    @PathVariable Long idNota) {
 

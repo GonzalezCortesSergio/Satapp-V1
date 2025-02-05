@@ -5,6 +5,7 @@ import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotAbiertaException;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotFoundException;
 import com.salesianostriana.dam.satapp.error.PasPermisoDenegadoException;
+import com.salesianostriana.dam.satapp.error.TecnicoPermisoDenegadoException;
 import com.salesianostriana.dam.satapp.error.UsuarioPermisoDenegadoException;
 import com.salesianostriana.dam.satapp.model.Estado;
 import com.salesianostriana.dam.satapp.model.Incidencia;
@@ -171,6 +172,26 @@ public class IncidenciaService {
 
         return result;
 
+
+    }
+
+    public List<Incidencia> findAllTecnico(String nombreCategoria, Long idTecnico){
+
+        if (usuarioRepository.findByIdTecnico(idTecnico).isEmpty()){
+            throw new TecnicoPermisoDenegadoException();
+        }
+        List<Incidencia> result;
+
+        if(nombreCategoria.equalsIgnoreCase("no"))
+            result = incidenciaRepository.findAllEstadoNoCerrada();
+
+        else
+            result = incidenciaRepository.findAllEstadoNoCerradaFiltroCategoria(nombreCategoria);
+
+        if(result.isEmpty())
+            throw new IncidenciaNotFoundException();
+
+        return result;
 
     }
 }
