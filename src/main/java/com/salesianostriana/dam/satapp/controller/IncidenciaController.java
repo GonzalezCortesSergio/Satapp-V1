@@ -3,6 +3,7 @@ package com.salesianostriana.dam.satapp.controller;
 import com.salesianostriana.dam.satapp.dto.*;
 import com.salesianostriana.dam.satapp.service.IncidenciaService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,117 @@ public class IncidenciaController {
 
     private final IncidenciaService incidenciaService;
 
+
+
+    @Operation(summary = "Se buscan todas las incidencias que se encuentran",
+    description = """
+            El método tiene un parámetro de petición llamado filtro, cuyo valor predeterminado es 'no'. En caso de querer filtrar por nombre de categoría,\
+             se tendrá que indicar con el patrón 'categoria-nombrecategoria'.
+            
+            En caso de querer filtrar por el estado de la incidencia, se tendrá que indicar con el patrón 'estado-nombreestado'.
+            
+            En caso de querer filtrar por ubicación de la incidencia, se tendrá que indicar con el patrón 'ubicacion-nombreubicacion'.
+            
+            Si se quiere ordenar todas las incidencias por fecha, se tendrá que indicar con el parámetro de petición llamado ordenarFecha y asignarle
+             de valor true.
+            
+            No se pueden ordenar por fecha los filtrados.
+            
+            """)
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se han encontrado las incidencias correctamente",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetIncidenciaListDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "count": 1,
+                                                                            "results": [
+                                                                                {
+                                                                                    "id": 1,
+                                                                                    "titulo": "Ordenador ardiendo",
+                                                                                    "descripcion": "No sé, el ordenador está ardiendo socorro ayuda ya porfavor",
+                                                                                    "urgencia": 5
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "No tienes permisos para ver todas las incidencias",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Pas permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                            "instance": "/api/incidencia/admin/2"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se han encontrado incidencias",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Incidencia no encontrada",
+                                                                            "status": 404,
+                                                                            "detail": "No se han encontrado incidencias",
+                                                                            "instance": "/api/incidencia/admin/1"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    @GetMapping("/admin/{idAdmin}")
+    public GetIncidenciaListDto findAll(@PathVariable Long idAdmin,
+                                        @Parameter(
+                                                description = "Posible valor para el filtro",
+                                                schema = @Schema(type = "string"),
+                                                example = "categoria-ordenadores"
+                                        )
+                                        @RequestParam(required = false, defaultValue = "no") String filtro,
+                                        @Parameter(
+                                                description = "Posible valor para el ordenarFecha",
+                                                schema = @Schema(type = "boolean"),
+                                                example = "false"
+                                        )
+                                        @RequestParam(required = false) boolean ordenarFecha) {
+
+        return GetIncidenciaListDto.of(incidenciaService.findAll(idAdmin, filtro, ordenarFecha));
+    }
 
     @GetMapping("/usuario/{idUsuario}")
     @Operation(summary = "Se buscan todas las incidencias abiertas por un usuario que no estén en estado CERRADA")
