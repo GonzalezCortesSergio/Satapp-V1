@@ -27,7 +27,7 @@ public class CategoriaController {
 
     private final CategoriaService categoriaService;
 
-    @PostMapping("admin/{idAdmin}/crear/{nombre}")
+
     @Operation(summary = "Solo un usuario PAS puede crear categorias")
     @ApiResponses(
             value = {
@@ -99,12 +99,13 @@ public class CategoriaController {
                     )
             }
     )
+    @PostMapping("admin/{idAdmin}/crear/{nombre}")
     public ResponseEntity<GetCategoriaDto> crearCategoria(@PathVariable Long idAdmin, @PathVariable String nombre){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(GetCategoriaDto.of(categoriaService.crearCategoria(idAdmin,nombre)) );
     }
 
-    @PostMapping("admin/{idAdmin}/crear/{nombre}/{nombreHija}")
+
     @Operation(summary = "Solo un usuario PAS puede crear categorias hijas")
     @ApiResponses(
             value = {
@@ -199,13 +200,14 @@ public class CategoriaController {
                     )
             }
     )
+    @PostMapping("admin/{idAdmin}/crear/{nombre}/{nombreHija}")
     public ResponseEntity<GetCategoriaDto> crearCategoriaHija(@PathVariable Long idAdmin, @PathVariable String nombre,
                                                               @PathVariable String nombreHija){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(GetCategoriaDto.of(categoriaService.crearCategoriaHija(idAdmin, nombre, nombreHija)));
     }
 
-    @GetMapping()
+
     @Operation(summary = "Todos los usuarios pueden ver la lista de categorias")
     @ApiResponses(
             value = {
@@ -264,6 +266,7 @@ public class CategoriaController {
                     )
             }
     )
+    @GetMapping()
     public List<GetCategoriaDto> findAll(){
         return categoriaService.findAll()
                 .stream()
@@ -271,7 +274,7 @@ public class CategoriaController {
                 .toList();
     }
 
-    @DeleteMapping("/admin/{idAdmin}/delete/{nombre}")
+
     @Operation(summary = "Se borra la categoria")
     @ApiResponses(
             value = {
@@ -307,6 +310,7 @@ public class CategoriaController {
                     )
             }
     )
+    @DeleteMapping("/admin/{idAdmin}/delete/{nombre}")
     public ResponseEntity<?> borrarCategoria(@PathVariable Long idAdmin, @PathVariable String nombre){
 
         categoriaService.deleteByNombre(idAdmin, nombre);

@@ -30,7 +30,7 @@ public class EquipoController {
     private final EquipoService equipoService;
 
 
-    @GetMapping
+
     @Operation(summary = "Se muestran los equipos que no tienen incidencia o las incidencias que tiene están cerradas")
     @ApiResponses(
             value = {
@@ -86,13 +86,14 @@ public class EquipoController {
                     )
             }
     )
+    @GetMapping
     public GetEquipoListDto findAllWithNoIncidencia() {
 
         return GetEquipoListDto.of(equipoService.findAllWithNoIncidencia());
     }
 
 
-    @PostMapping("/admin/{idAdmin}/crear")
+
     @Operation(summary = "Se agrega un equipo nuevo")
     @ApiResponses(
             value = {
@@ -143,6 +144,7 @@ public class EquipoController {
                     )
             }
     )
+    @PostMapping("/admin/{idAdmin}/crear")
     public ResponseEntity<GetEquipoDto> crearEquipo(@PathVariable Long idAdmin,
                                               @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                       description = "Equipo a crear",
@@ -170,7 +172,7 @@ public class EquipoController {
                 .body(GetEquipoDto.of(equipoService.save(idAdmin, equipoDto)));
     }
 
-    @PutMapping("/admin/{idAdmin}/edit/{idEquipo}")
+
     @Operation(summary = "Se edita un equipo")
     @ApiResponses(
             value = {
@@ -244,6 +246,7 @@ public class EquipoController {
                     )
             }
     )
+    @PutMapping("/admin/{idAdmin}/edit/{idEquipo}")
     public GetEquipoDto edit(@PathVariable Long idAdmin, @PathVariable Long idEquipo,
                        @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                description = "Datos a editar del equipo",
@@ -270,7 +273,7 @@ public class EquipoController {
         return GetEquipoDto.of(equipoService.edit(idAdmin, idEquipo, equipoDto));
     }
 
-    @DeleteMapping("/admin/{idAdmin}/delete/{idEquipo}")
+
     @Operation(summary = "Se borra un equipo con soft delete")
     @ApiResponses(
             value = {
@@ -309,6 +312,7 @@ public class EquipoController {
                     )
             }
     )
+    @DeleteMapping("/admin/{idAdmin}/delete/{idEquipo}")
     public ResponseEntity<?> deleteEquipo(@PathVariable Long idAdmin, @PathVariable Long idEquipo) {
 
         equipoService.remove(idAdmin, idEquipo);
@@ -316,7 +320,7 @@ public class EquipoController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/admin/{idAdmin}/cambiar/{idEquipo}/ubicacion/{nombreUbicacion}")
+
     @Operation(summary = "Se cambia un equipo de ubicación")
     @ApiResponses(
             value = {
@@ -413,6 +417,7 @@ public class EquipoController {
                     )
             }
     )
+    @PutMapping("/admin/{idAdmin}/cambiar/{idEquipo}/ubicacion/{nombreUbicacion}")
     public GetEquipoDto cambiarUbicacion(@PathVariable Long idAdmin, @PathVariable Long idEquipo, @PathVariable String nombreUbicacion) {
 
         return GetEquipoDto.of(equipoService.cambiarUbicacion(idAdmin, idEquipo, nombreUbicacion));

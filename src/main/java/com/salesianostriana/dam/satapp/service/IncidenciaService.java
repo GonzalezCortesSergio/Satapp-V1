@@ -4,11 +4,13 @@ import com.salesianostriana.dam.satapp.dto.CreateNotaDto;
 import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotAbiertaException;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotFoundException;
+import com.salesianostriana.dam.satapp.error.TecnicoPermisoDenegadoException;
 import com.salesianostriana.dam.satapp.error.UsuarioPermisoDenegadoException;
 import com.salesianostriana.dam.satapp.model.Estado;
 import com.salesianostriana.dam.satapp.model.Incidencia;
 import com.salesianostriana.dam.satapp.model.Nota;
 import com.salesianostriana.dam.satapp.repository.IncidenciaRepository;
+import com.salesianostriana.dam.satapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ import java.util.Optional;
 public class IncidenciaService {
 
     private final IncidenciaRepository incidenciaRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public List<Incidencia> findAllByUsuario(Long idUsuario) {
 
@@ -102,5 +105,25 @@ public class IncidenciaService {
                            });
                    return incidenciaRepository.save(incidencia);
                 }).orElseThrow(() -> new IncidenciaNotFoundException(idUsuario, idIncidencia));
+    }
+
+    public List<Incidencia> findAllTecnico(String nombreCategoria, Long idTecnico){
+
+        if (usuarioRepository.findByIdTecnico(idTecnico).isEmpty()){
+            throw new TecnicoPermisoDenegadoException();
+        }
+        List<Incidencia> result;
+
+        if(nombreCategoria.equalsIgnoreCase("no"))
+            result = incidenciaRepository.findAllEstadoNoCerrada();
+
+        else
+            result = incidenciaRepository.findAllEstadoNoCerradaFiltroCategoria(nombreCategoria);
+
+        if(result.isEmpty())
+            throw new IncidenciaNotFoundException();
+
+        return result;
+
     }
 }
