@@ -14,8 +14,7 @@ public class IncidenciaNotFoundException extends RuntimeException {
         super("No se ha encontrado una incidencia con el ID: %d para el usuario con ID: %d".formatted(idIncidencia, idUsuario));
     }
 
-    public IncidenciaNotFoundException(){
+    public IncidenciaNotFoundException() {
         super("No se han encontrado incidencias");
     }
-
 }

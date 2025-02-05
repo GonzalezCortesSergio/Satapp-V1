@@ -15,7 +15,6 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/incidencia")
@@ -26,6 +25,117 @@ public class IncidenciaController {
 
     private final IncidenciaService incidenciaService;
 
+
+
+    @Operation(summary = "Se buscan todas las incidencias que se encuentran",
+    description = """
+            El método tiene un parámetro de petición llamado filtro, cuyo valor predeterminado es 'no'. En caso de querer filtrar por nombre de categoría,\
+             se tendrá que indicar con el patrón 'categoria-nombrecategoria'.
+            
+            En caso de querer filtrar por el estado de la incidencia, se tendrá que indicar con el patrón 'estado-nombreestado'.
+            
+            En caso de querer filtrar por ubicación de la incidencia, se tendrá que indicar con el patrón 'ubicacion-nombreubicacion'.
+            
+            Si se quiere ordenar todas las incidencias por fecha, se tendrá que indicar con el parámetro de petición llamado ordenarFecha y asignarle
+             de valor true.
+            
+            No se pueden ordenar por fecha los filtrados.
+            
+            """)
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se han encontrado las incidencias correctamente",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetIncidenciaListDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "count": 1,
+                                                                            "results": [
+                                                                                {
+                                                                                    "id": 1,
+                                                                                    "titulo": "Ordenador ardiendo",
+                                                                                    "descripcion": "No sé, el ordenador está ardiendo socorro ayuda ya porfavor",
+                                                                                    "urgencia": 5
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "No tienes permisos para ver todas las incidencias",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Pas permiso no concedido",
+                                                                            "status": 401,
+                                                                            "detail": "No se ha encontrado un usuario PAS con el id: 2",
+                                                                            "instance": "/api/incidencia/admin/2"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se han encontrado incidencias",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Incidencia no encontrada",
+                                                                            "status": 404,
+                                                                            "detail": "No se han encontrado incidencias",
+                                                                            "instance": "/api/incidencia/admin/1"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    @GetMapping("/admin/{idAdmin}")
+    public GetIncidenciaListDto findAll(@PathVariable Long idAdmin,
+                                        @Parameter(
+                                                description = "Posible valor para el filtro",
+                                                schema = @Schema(type = "string"),
+                                                example = "categoria-ordenadores"
+                                        )
+                                        @RequestParam(required = false, defaultValue = "no") String filtro,
+                                        @Parameter(
+                                                description = "Posible valor para el ordenarFecha",
+                                                schema = @Schema(type = "boolean"),
+                                                example = "false"
+                                        )
+                                        @RequestParam(required = false) boolean ordenarFecha) {
+
+        return GetIncidenciaListDto.of(incidenciaService.findAll(idAdmin, filtro, ordenarFecha));
+    }
 
 
     @Operation(summary = "Se buscan todas las incidencias abiertas por un usuario que no estén en estado CERRADA")
@@ -474,125 +584,6 @@ public class IncidenciaController {
                                    @PathVariable Long idNota) {
 
         return GetIncidenciaDetailsDto.of(incidenciaService.eliminarNota(idUsuario, idIncidencia, idNota));
-    }
-
-
-    @Operation(summary = "Un técnico puede ver la lista de incidencias no cerradas y las puede " +
-            "filtar por categoría",
-    description = "El método tiene un parámetro de petición llamado nombreCategoria. Si se quiere filtrar " +
-            "por alguna de las categorías se debera indicar")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "No hay ninguna incidencia",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            schema = @Schema(implementation = ProblemDetail.class),
-                                            examples = {
-                                                    @ExampleObject(
-                                                            value = """
-                                                                    {
-                                                                         "type": "about:blank",
-                                                                         "title": "Incidencia no encontrada",
-                                                                         "status": 404,
-                                                                         "detail": "No se han encontrado incidencias",
-                                                                         "instance": "/api/incidencia/tecnico/2/categoria"
-                                                                    }
-                                                                   """
-                                                    )
-                                            }
-                                    )
-                            }
-                    ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "El usuario no tiene permiso para ver las incidencias",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            schema = @Schema(implementation = ProblemDetail.class),
-                                            examples = {
-                                                    @ExampleObject(
-                                                            value = """
-                                                                    {
-                                                                         "type": "about:blank",
-                                                                         "title": "Tecnico permiso no concedido",
-                                                                         "status": 401,
-                                                                         "detail": "El usuario debe de ser un técnico para acceder",
-                                                                         "instance": "/api/incidencia/tecnico/1/categoria"
-                                                                     }
-                                                                   """
-                                                    )
-                                            }
-                                    )
-                            }
-                    ),
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "El técnico puede acceder a todas las incidencias filtradas",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            schema = @Schema(implementation = GetIncidenciaListDto.class),
-                                            examples = {
-                                                    @ExampleObject(
-                                                            value = """
-                                                                    {
-                                                                         "count": 1,
-                                                                         "results": [
-                                                                             {
-                                                                                 "id": 1,
-                                                                                 "titulo": "Ordenador ardiendo",
-                                                                                 "descripcion": "No sé, el ordenador está ardiendo socorro ayuda ya porfavor",
-                                                                                 "urgencia": 5
-                                                                             }
-                                                                         ]
-                                                                     }
-                                                                   """
-                                                    )
-                                            }
-                                    )
-                            }
-                    ),
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "El técnico puede acceder a todas las incidencias",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            schema = @Schema(implementation = GetIncidenciaListDto.class),
-                                            examples = {
-                                                    @ExampleObject(
-                                                            value = """
-                                                                    {
-                                                                         "count": 1,
-                                                                         "results": [
-                                                                             {
-                                                                                 "id": 1,
-                                                                                 "titulo": "Ordenador ardiendo",
-                                                                                 "descripcion": "No sé, el ordenador está ardiendo socorro ayuda ya porfavor",
-                                                                                 "urgencia": 5
-                                                                             }
-                                                                         ]
-                                                                     }
-                                                                   """
-                                                    )
-                                            }
-                                    )
-                            }
-                    )
-            }
-    )
-    @GetMapping("/tecnico/{idTecnico}/categoria")
-    public GetIncidenciaListDto findIncidenciasNoCerradas(
-            @Parameter(
-                    description = "valor para filtrar por categoria",
-                    schema = @Schema(type = "string")
-            )
-            @RequestParam(required = false, defaultValue = "no") String nombreCategoria, @PathVariable Long idTecnico){
-        return GetIncidenciaListDto.of(incidenciaService.findAllTecnico(nombreCategoria, idTecnico));
     }
 
 }
