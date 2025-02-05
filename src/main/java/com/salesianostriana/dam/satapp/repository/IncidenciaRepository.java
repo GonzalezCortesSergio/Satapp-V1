@@ -127,4 +127,17 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
             )
             """)
     List<Incidencia> findAllByTecnicoGestiona(Long idTecnico);
+
+    @Query("""
+            select i
+            from Incidencia i
+            where exists (
+                    select it.incidencia
+                    from IncidenciaTecnico it
+                    where it.tecnico.id = :idTecnico
+                    and it.incidencia = :idIncidencia
+            )
+            """)
+    Optional<Incidencia> findByIncidenciaAndTecnico(Long idIncidencia, Long idTecnico);
+
 }

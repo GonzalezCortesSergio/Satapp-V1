@@ -255,4 +255,36 @@ public class IncidenciaService {
         return result;
     }
 
+    @Transactional
+    public Incidencia cambiarEstado(Long idTecnico, Long idIncidencia, String estado) {
+
+        if (usuarioRepository.findByIdTecnico(idTecnico).isEmpty()){
+            throw new TecnicoPermisoDenegadoException();
+        }
+
+        Incidencia incidencia = incidenciaRepository.findByIncidenciaAndTecnico(idIncidencia, idTecnico)
+                .orElseThrow(() -> new IncidenciaNotFoundException(idIncidencia));
+
+        switch (estado){
+            case "pendiente":
+                    incidencia.setEstado(Estado.PENDIENTE);
+                    break;
+
+            case "trabajando":
+                incidencia.setEstado(Estado.TRABAJANDO);
+                break;
+
+            case "cerrada":
+                incidencia.setEstado(Estado.CERRADA);
+                break;
+
+            default:
+                return incidencia;
+
+        }
+
+        return incidenciaRepository.save(incidencia);
+
+    }
+
 }

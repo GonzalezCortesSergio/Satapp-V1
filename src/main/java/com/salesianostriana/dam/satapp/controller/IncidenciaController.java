@@ -1033,4 +1033,10 @@ public class IncidenciaController {
         return GetIncidenciaDetailsDto.of(incidenciaService.seleccionarIncidencia(idTecnico, idIncidencia));
     }
 
+    @PutMapping("/tecnico/{idTecnico}/incidencia/{idIncidencia/{estado}")
+    public GetIncidenciaDetailsDto cambiarEstadoIncidencia(@PathVariable Long idTecnico, @PathVariable Long idIncidencia,
+                                                           @PathVariable String estado){
+        return GetIncidenciaDetailsDto.of(incidenciaService.cambiarEstado(idTecnico, idIncidencia, estado));
+    }
+
 }
