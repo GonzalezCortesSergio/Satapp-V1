@@ -194,4 +194,18 @@ public class IncidenciaService {
         return result;
 
     }
+
+    public Incidencia gestionarIncidencia(Long idTecnico, Long idIncidencia){
+
+        if (usuarioRepository.findByIdTecnico(idTecnico).isEmpty()){
+            throw new TecnicoPermisoDenegadoException();
+        }
+
+        if (incidenciaRepository.findByIdNoCerrada(idIncidencia).isEmpty()){
+            throw new IncidenciaNotFoundException();
+        }
+            
+
+    }
+
 }

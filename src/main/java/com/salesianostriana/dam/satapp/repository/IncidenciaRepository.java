@@ -108,4 +108,12 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
             ORDER BY i.urgencia DESC
             """)
     List<Incidencia> findAllByUbicacion(String nombreUbicacion);
+
+    @Query("""
+            select i
+            from Incidencia i
+            where i.estado != 'CERRADA'
+            and i.id = :idIncidencia
+            """)
+    Optional<Incidencia> findByIdNoCerrada(Long idIncidencia);
 }
