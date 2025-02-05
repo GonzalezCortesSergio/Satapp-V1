@@ -263,7 +263,7 @@ public class IncidenciaService {
         }
 
         Incidencia incidencia = incidenciaRepository.findByIncidenciaAndTecnico(idIncidencia, idTecnico)
-                .orElseThrow(() -> new IncidenciaNotFoundException(idIncidencia));
+                .orElseThrow(() -> new IncidenciaNotFoundException());
 
         switch (estado){
             case "pendiente":

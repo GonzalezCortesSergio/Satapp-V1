@@ -131,11 +131,12 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
     @Query("""
             select i
             from Incidencia i
-            where exists (
+            where EXISTS (
                     select it.incidencia
                     from IncidenciaTecnico it
                     where it.tecnico.id = :idTecnico
-                    and it.incidencia = :idIncidencia
+                    and it.incidencia.id = :idIncidencia
+                    and it.tecnicoResponsable IS TRUE
             )
             """)
     Optional<Incidencia> findByIncidenciaAndTecnico(Long idIncidencia, Long idTecnico);
