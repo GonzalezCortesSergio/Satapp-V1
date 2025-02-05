@@ -8,7 +8,6 @@ import com.salesianostriana.dam.satapp.model.Estado;
 import com.salesianostriana.dam.satapp.model.Incidencia;
 import com.salesianostriana.dam.satapp.model.Nota;
 import com.salesianostriana.dam.satapp.repository.*;
-import com.salesianostriana.dam.satapp.error.*;
 import com.salesianostriana.dam.satapp.model.*;
 import com.salesianostriana.dam.satapp.repository.IncidenciaRepository;
 import com.salesianostriana.dam.satapp.repository.IncidenciaTecnicoRepository;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -293,6 +291,27 @@ public class IncidenciaService {
         }
 
         return incidenciaRepository.save(incidencia);
+
+    }
+
+    @Transactional
+    public IncidenciaTecnico cambiarTecnicoResponsable(Long idTecnicoResponsable, Long idTecnicoNuevo, Long idIncidencia) {
+
+
+        IncidenciaTecnico itResponsable = incidenciaTecnicoRepository.findByIdIncidenciaAndIdTecnicoResponsable(idIncidencia, idTecnicoResponsable)
+                .orElseThrow(() -> new TecnicoNoResponsableException(idTecnicoResponsable, idIncidencia));
+
+        IncidenciaTecnico itNuevo = incidenciaTecnicoRepository.findByIdIncidenciaAndIdTecnico(idIncidencia, idTecnicoNuevo)
+                .orElseThrow(() -> new TecnicoNoRelacionadoException(idTecnicoNuevo, idIncidencia));
+
+        itResponsable.setTecnicoResponsable(false);
+
+        itNuevo.setTecnicoResponsable(true);
+
+        incidenciaTecnicoRepository.save(itResponsable);
+
+
+        return incidenciaTecnicoRepository.save(itNuevo);
 
     }
 
