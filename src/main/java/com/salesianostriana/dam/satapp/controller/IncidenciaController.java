@@ -703,4 +703,12 @@ public class IncidenciaController {
         return GetIncidenciaDetailsDto.of(incidenciaService.eliminarNota(idUsuario, idIncidencia, idNota));
     }
 
+    @PostMapping("/usuario/{idUsuario}/crearIncidencia/categoria/{categoria}/equipo/{idEquipo}/ubicacion/{ubicacion}")
+    public GetIncidenciaDetailsDto crearIncidencia(@PathVariable Long idUsuario, @PathVariable String categoria,
+                                                   @PathVariable Long idEquipo, @PathVariable String ubicacion,
+                                                   @RequestBody CreateIncidenciaDto incidenciaDto) {
+
+        return GetIncidenciaDetailsDto.of(incidenciaService.save(idUsuario, incidenciaDto, categoria, idEquipo, ubicacion));
+    }
+
 }

@@ -1,17 +1,13 @@
 package com.salesianostriana.dam.satapp.service;
 
+import com.salesianostriana.dam.satapp.dto.CreateIncidenciaDto;
 import com.salesianostriana.dam.satapp.dto.CreateNotaDto;
 import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
-import com.salesianostriana.dam.satapp.error.IncidenciaNotAbiertaException;
-import com.salesianostriana.dam.satapp.error.IncidenciaNotFoundException;
-import com.salesianostriana.dam.satapp.error.PasPermisoDenegadoException;
-import com.salesianostriana.dam.satapp.error.TecnicoPermisoDenegadoException;
-import com.salesianostriana.dam.satapp.error.UsuarioPermisoDenegadoException;
+import com.salesianostriana.dam.satapp.error.*;
 import com.salesianostriana.dam.satapp.model.Estado;
 import com.salesianostriana.dam.satapp.model.Incidencia;
 import com.salesianostriana.dam.satapp.model.Nota;
-import com.salesianostriana.dam.satapp.repository.IncidenciaRepository;
-import com.salesianostriana.dam.satapp.repository.UsuarioRepository;
+import com.salesianostriana.dam.satapp.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +23,9 @@ public class IncidenciaService {
 
     private final IncidenciaRepository incidenciaRepository;
     private final UsuarioRepository usuarioRepository;
+    private final CategoriaRepository categoriaRepository;
+    private final UbicacionRepository ubicacionRepository;
+    private final EquipoRepository equipoRepository;
 
     public List<Incidencia> findAllByUsuario(Long idUsuario) {
 
@@ -192,6 +191,25 @@ public class IncidenciaService {
             throw new IncidenciaNotFoundException();
 
         return result;
+
+    }
+
+    @Transactional
+    public Incidencia save(Long idUsuario, CreateIncidenciaDto incidenciaDto, String categoria, Long idEquipo, String ubicacion) {
+
+        Incidencia incidencia = incidenciaDto.toIncidencia();
+
+        incidencia.setUsuario(usuarioRepository.findById(idUsuario).orElseThrow(() -> new UsuarioNotFoundException(idUsuario)));
+        incidencia.setCategoria(categoriaRepository.findByNombre(categoria).orElseThrow(() -> new CategoriaNotFoundException(categoria)));
+        incidencia.setUbicacion(ubicacionRepository.findByNombre(ubicacion).orElseThrow(UbicacionNotFoundException::new));
+        if(idEquipo > 0) {
+            incidencia.setEquipo(equipoRepository.findById(idEquipo).orElseThrow(() -> new EquipoNotFoundException(idEquipo)));
+        }
+
+        incidencia.setFecha(LocalDate.now());
+        incidencia.setEstado(Estado.ABIERTA);
+
+        return incidenciaRepository.save(incidencia);
 
     }
 }

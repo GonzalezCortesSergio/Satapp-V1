@@ -8,6 +8,6 @@ public class CategoriaNotFoundException extends RuntimeException {
 
     public CategoriaNotFoundException(String nombre){
 
-        super("No se ha encontrado ninguna categoría con ese nombre");
+        super("No se ha encontrado la categoria %s".formatted(nombre));
     }
 }
