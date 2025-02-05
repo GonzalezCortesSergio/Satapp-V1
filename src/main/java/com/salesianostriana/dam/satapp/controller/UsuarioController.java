@@ -4,10 +4,10 @@ import com.salesianostriana.dam.satapp.dto.CreateHistoricoCursoDto;
 import com.salesianostriana.dam.satapp.dto.CreateUsuarioDto;
 import com.salesianostriana.dam.satapp.dto.GetAlumnoDto;
 import com.salesianostriana.dam.satapp.dto.GetUsuarioDto;
-import com.salesianostriana.dam.satapp.model.HistoricoCurso;
 import com.salesianostriana.dam.satapp.model.Usuario;
 import com.salesianostriana.dam.satapp.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuario")
@@ -32,7 +31,7 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    @PostMapping("/admin/{idAdmin}/crear/{tipoUsuario}")
+
     @Operation(summary = "Un usuario PAS crea otros usuarios")
     @ApiResponses(
             value = {
@@ -111,6 +110,7 @@ public class UsuarioController {
                     )
             }
     )
+    @PostMapping("/admin/{idAdmin}/crear/{tipoUsuario}")
     public ResponseEntity<Usuario>crearUsuario(@PathVariable Long idAdmin,
                                                @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                        description = "Usuario a crear",
@@ -136,13 +136,18 @@ public class UsuarioController {
                                                        }
                                                )
                                                @RequestBody CreateUsuarioDto createUsuarioDto,
-                                               @PathVariable String tipoUsuario,@RequestParam(required = false) String tipoPersonal){
+                                               @PathVariable String tipoUsuario,
+                                               @Parameter(
+                                                       description = "valor necesario para elegir el tipo del personal a crear",
+                                                       schema = @Schema(type = "string")
+                                               )
+                                               @RequestParam(required = false) String tipoPersonal){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
                         usuarioService.crearUsuario(idAdmin, createUsuarioDto, tipoUsuario, tipoPersonal));
     }
 
-    @PutMapping("/admin/{idAdmin}/editar/{id}")
+
     @Operation(summary = "Un usuario PAS edita otros usuarios")
     @ApiResponses(
             value = {
@@ -221,6 +226,7 @@ public class UsuarioController {
                     )
             }
     )
+    @PutMapping("/admin/{idAdmin}/editar/{id}")
     public Usuario editarPas(@PathVariable Long idAdmin,
                              @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                      description = "Datos a editar del usuario",
@@ -249,7 +255,7 @@ public class UsuarioController {
         return usuarioService.editarUsuario(idAdmin, createUsuarioDto,id);
     }
 
-    @GetMapping("/admin/{idAdmin}/verTodosUsuarios")
+
     @Operation(summary = "Un usuario PAS puede ver todos los usuarios")
     @ApiResponses(
             value = {
@@ -303,6 +309,7 @@ public class UsuarioController {
                     )
             }
     )
+    @GetMapping("/admin/{idAdmin}/verTodosUsuarios")
     public List<GetUsuarioDto> findAllUsuarios(@PathVariable Long idAdmin){
         return usuarioService.findAll(idAdmin)
                 .stream()
@@ -311,7 +318,7 @@ public class UsuarioController {
     }
 
 
-    @GetMapping("/admin/{idUsuario}/verUsuario/{id}")
+
     @Operation(summary = "Un usuario PAS puede ver todos los usuarios y un usuario solo puede verse a sí mismo")
     @ApiResponses(
             value = {
@@ -387,12 +394,13 @@ public class UsuarioController {
                     )
             }
     )
+    @GetMapping("/admin/{idUsuario}/verUsuario/{id}")
     public GetUsuarioDto findById(@PathVariable Long idUsuario, @PathVariable Long id) {
 
         return GetUsuarioDto.of(usuarioService.findById(id, idUsuario));
     }
 
-    @DeleteMapping("/admin/{idUsuario}/delete/{id}")
+
     @Operation(summary = "Eliminar un usuario")
     @ApiResponses(
             value = {
@@ -461,13 +469,14 @@ public class UsuarioController {
                     )
             }
     )
+    @DeleteMapping("/admin/{idUsuario}/delete/{id}")
     public ResponseEntity<?> deleteByIdUsuario(@PathVariable Long idUsuario, @PathVariable Long id) {
 
         usuarioService.deleteById(idUsuario, id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/admin/{idAdmin}/aniadirhistoricocurso/{idAlumno}")
+
     @Operation(summary = "Añadir un historico curso")
     @ApiResponses(
             value = {
@@ -545,6 +554,7 @@ public class UsuarioController {
                     )
             }
     )
+    @PutMapping("/admin/{idAdmin}/aniadirhistoricocurso/{idAlumno}")
     public GetAlumnoDto aniadirHistoricoCurso(@PathVariable Long idAlumno, @PathVariable Long idAdmin,
                                               @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                       description = "Histórico Curso a añadir",

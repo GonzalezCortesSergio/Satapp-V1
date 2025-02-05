@@ -112,4 +112,12 @@ public class GlobalErrorController extends ResponseEntityExceptionHandler {
         return detail;
     }
 
+    @ExceptionHandler(TecnicoPermisoDenegadoException.class)
+    public ProblemDetail handleTecnicoPermisoDenegadoException(TecnicoPermisoDenegadoException exception){
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, exception.getMessage());
+        detail.setTitle("Tecnico permiso no concedido");
+
+        return detail;
+    }
+
 }

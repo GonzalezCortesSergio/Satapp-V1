@@ -4,16 +4,21 @@ import com.salesianostriana.dam.satapp.dto.CreateNotaDto;
 import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotAbiertaException;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotFoundException;
+import com.salesianostriana.dam.satapp.error.PasPermisoDenegadoException;
+import com.salesianostriana.dam.satapp.error.TecnicoPermisoDenegadoException;
+import com.salesianostriana.dam.satapp.error.UsuarioPermisoDenegadoException;
 import com.salesianostriana.dam.satapp.model.Estado;
 import com.salesianostriana.dam.satapp.model.Incidencia;
 import com.salesianostriana.dam.satapp.model.Nota;
 import com.salesianostriana.dam.satapp.repository.IncidenciaRepository;
+import com.salesianostriana.dam.satapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +26,7 @@ import java.util.List;
 public class IncidenciaService {
 
     private final IncidenciaRepository incidenciaRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public List<Incidencia> findAllByUsuario(Long idUsuario) {
 
@@ -85,5 +91,107 @@ public class IncidenciaService {
 
                     return incidenciaRepository.save(incidencia);
                 }).orElseThrow(() -> new IncidenciaNotFoundException(idUsuario, idIncidencia));
+    }
+
+    @Transactional
+    public Incidencia eliminarNota(Long idUsuario, Long idIncidencia, Long idNota) {
+
+        return incidenciaRepository.findByUsuarioAndIdNotCerrada(idUsuario, idIncidencia)
+                .map(incidencia -> {
+                   incidencia.getListaNotas().stream()
+                           .filter(nota -> nota.getId().equals(idNota))
+                           .findFirst()
+                           .ifPresent(nota -> {
+                               incidencia.getListaNotas().remove(nota);
+                           });
+                   return incidenciaRepository.save(incidencia);
+                }).orElseThrow(() -> new IncidenciaNotFoundException(idUsuario, idIncidencia));
+    }
+
+
+    public List<Incidencia> findAll(Long idAdmin, String filtro, boolean ordenarFecha) {
+
+        if (usuarioRepository.findByIdPas(idAdmin).isEmpty())
+            throw new PasPermisoDenegadoException(idAdmin);
+
+        String[] tipoFiltro = filtro.split("-");
+        List<Incidencia> result;
+        if (tipoFiltro.length > 1) {
+
+            switch (tipoFiltro[0]) {
+                case "categoria":
+                    result = incidenciaRepository.findAllByCategoriaNombre(tipoFiltro[1]);
+
+                    if (result.isEmpty())
+                        throw new IncidenciaNotFoundException();
+
+                    return result;
+
+                case "estado":
+
+                    result = incidenciaRepository.findAllByEstado(tipoFiltro[1].toUpperCase());
+
+                    if (result.isEmpty())
+                        throw new IncidenciaNotFoundException();
+
+                    return result;
+
+                case "ubicacion":
+
+                    result = incidenciaRepository.findAllByUbicacion(tipoFiltro[1]);
+
+                    if (result.isEmpty())
+                        throw new IncidenciaNotFoundException();
+
+                    return result;
+
+                default:
+
+                    if (ordenarFecha)
+                        result = incidenciaRepository.findAllOrderByFecha();
+
+                    else
+                        result = incidenciaRepository.findAll();
+
+                    if (result.isEmpty())
+                        throw new IncidenciaNotFoundException();
+
+                    return result;
+            }
+
+        }
+
+        if (ordenarFecha)
+            result = incidenciaRepository.findAllOrderByFecha();
+
+        else
+            result = incidenciaRepository.findAll();
+
+        if (result.isEmpty())
+            throw new IncidenciaNotFoundException();
+
+        return result;
+
+
+    }
+
+    public List<Incidencia> findAllTecnico(String nombreCategoria, Long idTecnico){
+
+        if (usuarioRepository.findByIdTecnico(idTecnico).isEmpty()){
+            throw new TecnicoPermisoDenegadoException();
+        }
+        List<Incidencia> result;
+
+        if(nombreCategoria.equalsIgnoreCase("no"))
+            result = incidenciaRepository.findAllEstadoNoCerrada();
+
+        else
+            result = incidenciaRepository.findAllEstadoNoCerradaFiltroCategoria(nombreCategoria);
+
+        if(result.isEmpty())
+            throw new IncidenciaNotFoundException();
+
+        return result;
+
     }
 }
