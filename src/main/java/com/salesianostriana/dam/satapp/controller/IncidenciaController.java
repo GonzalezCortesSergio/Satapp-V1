@@ -1,10 +1,8 @@
 package com.salesianostriana.dam.satapp.controller;
 
 import com.salesianostriana.dam.satapp.dto.*;
-import com.salesianostriana.dam.satapp.model.Incidencia;
 import com.salesianostriana.dam.satapp.service.IncidenciaService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
