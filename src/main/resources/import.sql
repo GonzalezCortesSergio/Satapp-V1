@@ -2,7 +2,7 @@ INSERT INTO usuario(id, tipo_usuario, nombre, username, email, password, role, t
 
 ALTER SEQUENCE usuario_seq RESTART WITH 51;
 
-INSERT INTO categoria(id, nombre) VALUES(1, 'Ordenadores');
+INSERT INTO categoria(id, nombre, deleted) VALUES(1, 'Ordenadores', FALSE);
 
 ALTER SEQUENCE categoria_seq RESTART WITH 51;
 

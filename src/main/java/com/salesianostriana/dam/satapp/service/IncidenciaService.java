@@ -4,6 +4,7 @@ import com.salesianostriana.dam.satapp.dto.CreateNotaDto;
 import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotAbiertaException;
 import com.salesianostriana.dam.satapp.error.IncidenciaNotFoundException;
+import com.salesianostriana.dam.satapp.error.UsuarioPermisoDenegadoException;
 import com.salesianostriana.dam.satapp.model.Estado;
 import com.salesianostriana.dam.satapp.model.Incidencia;
 import com.salesianostriana.dam.satapp.model.Nota;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -84,6 +86,21 @@ public class IncidenciaService {
                     );
 
                     return incidenciaRepository.save(incidencia);
+                }).orElseThrow(() -> new IncidenciaNotFoundException(idUsuario, idIncidencia));
+    }
+
+    @Transactional
+    public Incidencia eliminarNota(Long idUsuario, Long idIncidencia, Long idNota) {
+
+        return incidenciaRepository.findByUsuarioAndIdNotCerrada(idUsuario, idIncidencia)
+                .map(incidencia -> {
+                   incidencia.getListaNotas().stream()
+                           .filter(nota -> nota.getId().equals(idNota))
+                           .findFirst()
+                           .ifPresent(nota -> {
+                               incidencia.getListaNotas().remove(nota);
+                           });
+                   return incidenciaRepository.save(incidencia);
                 }).orElseThrow(() -> new IncidenciaNotFoundException(idUsuario, idIncidencia));
     }
 }

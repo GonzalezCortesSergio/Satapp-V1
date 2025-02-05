@@ -3,7 +3,6 @@ package com.salesianostriana.dam.satapp.controller;
 import com.salesianostriana.dam.satapp.dto.*;
 import com.salesianostriana.dam.satapp.service.IncidenciaService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -398,5 +397,76 @@ public class IncidenciaController {
         return GetIncidenciaDetailsDto.of(incidenciaService.addNota(idUsuario, idIncidencia, notaDto));
     }
 
+    @PutMapping("/{idIncidencia}/usuario/{idUsuario}/borrarnota/{idNota}")
+    @Operation(summary = "Se borra una nota a una incidencia que no está cerrada")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se borra correctamente la nota de la incidencia",
+                            content = {
+                                    @Content(
+                                        mediaType = "application/json",
+                                            schema = @Schema(implementation = GetIncidenciaDetailsDto.class),
+                                            examples = {
+                                                @ExampleObject(
+                                                        value = """
+                                                                {
+                                                                    "fecha": "2025-01-28",
+                                                                    "titulo": "Ordenador ardiendo",
+                                                                    "descripcion": "No sé, el ordenador está ardiendo socorro ayuda ya porfavor",
+                                                                    "estado": "ABIERTA",
+                                                                    "urgencia": 5,
+                                                                    "categoria": "Ordenadores",
+                                                                    "notas": [],
+                                                                    "equipo": {
+                                                                        "id": 1,
+                                                                        "nombre": "Ordenador",
+                                                                        "caracteristicas": "Un ordenador to wapo",
+                                                                        "ubicacion": null,
+                                                                        "deleted": false
+                                                                    },
+                                                                    "ubicacion": {
+                                                                        "id": 1,
+                                                                        "nombre": "Aula 1",
+                                                                        "deleted": false
+                                                                    }
+                                                                }
+                                                                """
+                                                )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se ha encontrado la incidencia a la que borrar la nota",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                    {
+                                                                         "type": "about:blank",
+                                                                         "title": "Incidencia no encontrada",
+                                                                         "status": 404,
+                                                                         "detail": "No se ha encontrado una incidencia con el ID: 1 para el usuario con ID: 2",
+                                                                         "instance": "/api/incidencia/1/usuario/2/borrarnota/1"
+                                                                    }
+                                                                   """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public GetIncidenciaDetailsDto eliminarNota(@PathVariable Long idUsuario, @PathVariable Long idIncidencia,
+                                   @PathVariable Long idNota) {
+
+        return GetIncidenciaDetailsDto.of(incidenciaService.eliminarNota(idUsuario, idIncidencia, idNota));
+    }
 
 }
