@@ -440,7 +440,7 @@ public class IncidenciaController {
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "El usuario no tiene permiso para borrar la nota",
+                            description = "No se ha encontrado la incidencia a la que borrar la nota",
                             content = {
                                     @Content(
                                             mediaType = "application/json",
