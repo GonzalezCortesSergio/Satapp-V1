@@ -1231,4 +1231,101 @@ public class IncidenciaController {
         return GetIncidenciaDetailsDto.of(incidenciaService.cambiarEstado(idTecnico, idIncidencia, estado));
     }
 
+    @Operation(summary = "Se cambia de técnico responsable en una incidencia")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se ha cambiado de técnico responsable correctamente",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetIncidenciaTecnicoDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "incidencia": {
+                                                                                "fecha": "2025-01-28",
+                                                                                "titulo": "Ordenador ardiendo",
+                                                                                "descripcion": "No sÃ©, el ordenador estÃ¡ ardiendo socorro ayuda ya porfavor",
+                                                                                "estado": "ABIERTA",
+                                                                                "urgencia": 5,
+                                                                                "categoria": "Ordenadores",
+                                                                                "notas": [],
+                                                                                "equipo": {
+                                                                                    "id": 1,
+                                                                                    "nombre": "Ordenador",
+                                                                                    "caracteristicas": "Un ordenador to wapo",
+                                                                                    "ubicacion": null,
+                                                                                    "deleted": false
+                                                                                },
+                                                                                "ubicacion": {
+                                                                                    "id": 1,
+                                                                                    "nombre": "Aula 1",
+                                                                                    "deleted": false
+                                                                                }
+                                                                            },
+                                                                            "tecnicoResponsable": "maria"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "El técnico no es responsable de la incidencia",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                @ExampleObject(
+                                                        value = """
+                                                                    {
+                                                                        "type": "about:blank",
+                                                                        "title": "Técnico no responsable",
+                                                                        "status": 400,
+                                                                        "detail": "El técnico de ID: 2 no es responsable de la incidencia con ID: 1",
+                                                                        "instance": "/api/incidencia/1/tecnicoResponsable/2/cambiar/3"
+                                                                    }
+                                                                """
+                                                )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "El técnico nuevo no gestiona la incidencia",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Técnico no encontrado",
+                                                                            "status": 404,
+                                                                            "detail": "El técnico con ID: 3 no está gestionando la incidencia con ID: 1",
+                                                                            "instance": "/api/incidencia/1/tecnicoResponsable/2/cambiar/3"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    @PutMapping("/{idIncidencia}/tecnicoResponsable/{idTecnicoResponsable}/cambiar/{idTecnicoNuevo}")
+    public GetIncidenciaTecnicoDto cambiarTecnicoResponsable(@PathVariable Long idTecnicoResponsable, @PathVariable Long idTecnicoNuevo, @PathVariable Long idIncidencia) {
+
+        return GetIncidenciaTecnicoDto.of(incidenciaService.cambiarTecnicoResponsable(idTecnicoResponsable, idTecnicoNuevo, idIncidencia));
+    }
+
 }
