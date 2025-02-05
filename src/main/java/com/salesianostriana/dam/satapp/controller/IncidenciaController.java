@@ -408,7 +408,35 @@ public class IncidenciaController {
                             description = "Se borra correctamente la nota de la incidencia",
                             content = {
                                     @Content(
-
+                                        mediaType = "application/json",
+                                            schema = @Schema(implementation = GetIncidenciaDetailsDto.class),
+                                            examples = {
+                                                @ExampleObject(
+                                                        value = """
+                                                                {
+                                                                    "fecha": "2025-01-28",
+                                                                    "titulo": "Ordenador ardiendo",
+                                                                    "descripcion": "No sé, el ordenador está ardiendo socorro ayuda ya porfavor",
+                                                                    "estado": "ABIERTA",
+                                                                    "urgencia": 5,
+                                                                    "categoria": "Ordenadores",
+                                                                    "notas": [],
+                                                                    "equipo": {
+                                                                        "id": 1,
+                                                                        "nombre": "Ordenador",
+                                                                        "caracteristicas": "Un ordenador to wapo",
+                                                                        "ubicacion": null,
+                                                                        "deleted": false
+                                                                    },
+                                                                    "ubicacion": {
+                                                                        "id": 1,
+                                                                        "nombre": "Aula 1",
+                                                                        "deleted": false
+                                                                    }
+                                                                }
+                                                                """
+                                                )
+                                            }
                                     )
                             }
                     ),
