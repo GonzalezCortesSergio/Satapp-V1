@@ -116,4 +116,18 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
             and i.id = :idIncidencia
             """)
     Optional<Incidencia> findByIdNoCerrada(Long idIncidencia);
+
+    @Query("""
+            SELECT i
+            FROM Incidencia i
+            WHERE i IN (
+                    SELECT it.incidencia
+                    FROM IncidenciaTecnico it
+                    JOIN it.incidencia
+                    JOIN it.tecnico
+                    WHERE it.tecnico.id = :idTecnico
+            )
+            AND i.estado != 'CERRADA'
+            """)
+    List<Incidencia> findAllByTecnicoGestiona(Long idTecnico);
 }

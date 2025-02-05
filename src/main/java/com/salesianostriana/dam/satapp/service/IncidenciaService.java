@@ -218,4 +218,14 @@ public class IncidenciaService {
         return incidencia;
     }
 
+    public List<Incidencia> findAllByTecnico(Long idTecnico) {
+
+        List<Incidencia> result = incidenciaRepository.findAllByTecnicoGestiona(idTecnico);
+
+        if(result.isEmpty())
+            throw new IncidenciaNotFoundException();
+
+        return result;
+    }
+
 }

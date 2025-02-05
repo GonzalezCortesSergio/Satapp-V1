@@ -144,6 +144,12 @@ public class IncidenciaController {
         return GetIncidenciaListDto.of(incidenciaService.findAllTecnico(nombreCategoria, idTecnico));
     }
 
+    @GetMapping("/tecnico/{idTecnico}/verGestionadas")
+    public GetIncidenciaListDto findAllByTecnico(Long idTecnico) {
+
+        return GetIncidenciaListDto.of(incidenciaService.findAllByTecnico(idTecnico));
+    }
+
     @Operation(summary = "Se buscan todas las incidencias que se encuentran",
     description = """
             El método tiene un parámetro de petición llamado filtro, cuyo valor predeterminado es 'no'. En caso de querer filtrar por nombre de categoría,\
