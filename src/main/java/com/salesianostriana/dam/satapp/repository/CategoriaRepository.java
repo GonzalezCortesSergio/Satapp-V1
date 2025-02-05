@@ -12,7 +12,7 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
     @Query("""
             select c
             from Categoria c
-            where c.nombre = :nombre
+            where upper(c.nombre) = upper(:nombre)
             """)
     Optional<Categoria> findByNombre(String nombre);
 
@@ -20,7 +20,7 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
     @Query("""
             update Categoria c
             set c.deleted = false
-            where c.nombre = :nombre
+            where upper(c.nombre) = upper(:nombre)
             """)
     void deleteByNombre(String nombre);
 }

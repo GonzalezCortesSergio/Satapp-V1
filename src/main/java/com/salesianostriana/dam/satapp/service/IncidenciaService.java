@@ -1,7 +1,13 @@
 package com.salesianostriana.dam.satapp.service;
 
+import com.salesianostriana.dam.satapp.dto.CreateIncidenciaDto;
 import com.salesianostriana.dam.satapp.dto.CreateNotaDto;
 import com.salesianostriana.dam.satapp.dto.EditIncidenciaDto;
+import com.salesianostriana.dam.satapp.error.*;
+import com.salesianostriana.dam.satapp.model.Estado;
+import com.salesianostriana.dam.satapp.model.Incidencia;
+import com.salesianostriana.dam.satapp.model.Nota;
+import com.salesianostriana.dam.satapp.repository.*;
 import com.salesianostriana.dam.satapp.error.*;
 import com.salesianostriana.dam.satapp.model.*;
 import com.salesianostriana.dam.satapp.repository.IncidenciaRepository;
@@ -22,6 +28,9 @@ public class IncidenciaService {
 
     private final IncidenciaRepository incidenciaRepository;
     private final UsuarioRepository usuarioRepository;
+    private final CategoriaRepository categoriaRepository;
+    private final UbicacionRepository ubicacionRepository;
+    private final EquipoRepository equipoRepository;
     private final IncidenciaTecnicoRepository incidenciaTecnicoRepository;
 
     public List<Incidencia> findAllByUsuario(Long idUsuario) {
@@ -188,6 +197,24 @@ public class IncidenciaService {
             throw new IncidenciaNotFoundException();
 
         return result;
+
+    }
+
+    @Transactional
+    public Incidencia save(Long idUsuario, CreateIncidenciaDto incidenciaDto, String categoria, Long idEquipo, String ubicacion) {
+
+        Incidencia incidencia = incidenciaDto.toIncidencia();
+
+        incidencia.setUsuario(usuarioRepository.findById(idUsuario).orElseThrow(() -> new UsuarioNotFoundException(idUsuario)));
+        incidencia.setCategoria(categoriaRepository.findByNombre(categoria).orElseThrow(() -> new CategoriaNotFoundException(categoria)));
+        incidencia.setUbicacion(ubicacionRepository.findByNombre(ubicacion).orElseThrow(UbicacionNotFoundException::new));
+        incidencia.setEquipo(equipoRepository.findById(idEquipo).orElse(null));
+
+
+        incidencia.setFecha(LocalDate.now());
+        incidencia.setEstado(Estado.ABIERTA);
+
+        return incidenciaRepository.save(incidencia);
 
     }
 
