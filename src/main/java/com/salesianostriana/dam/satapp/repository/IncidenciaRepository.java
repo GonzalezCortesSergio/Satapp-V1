@@ -129,6 +129,14 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
     List<Incidencia> findAllByTecnicoGestiona(Long idTecnico);
 
     @Query("""
+            SELECT i
+            FROM Incidencia i
+            LEFT JOIN fetch i.tecnicosGestionan
+            WHERE i.id = :idIncidencia
+            """)
+    Optional<Incidencia> findByIdFetch(Long idIncidencia);
+
+    @Query("""
             select i
             from Incidencia i
             where EXISTS (

@@ -255,6 +255,15 @@ public class IncidenciaService {
         return result;
     }
 
+    public Incidencia findByIdAdmin(Long idAdmin, Long idIncidencia) {
+
+        if(usuarioRepository.findByIdPas(idAdmin).isEmpty())
+            throw new PasPermisoDenegadoException(idAdmin);
+
+        return incidenciaRepository.findByIdFetch(idIncidencia)
+                .orElseThrow(() -> new IncidenciaNotFoundException(idIncidencia));
+    }
+
     @Transactional
     public Incidencia cambiarEstado(Long idTecnico, Long idIncidencia, String estado) {
 
