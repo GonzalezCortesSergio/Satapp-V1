@@ -24,4 +24,13 @@ public interface IncidenciaTecnicoRepository extends JpaRepository<IncidenciaTec
             AND it.tecnico.id = :idTecnico
             """)
     Optional<IncidenciaTecnico> findByIdIncidenciaAndIdTecnico(Long idIncidencia, Long idTecnico);
+
+    @Query("""
+            SELECT it
+            FROM IncidenciaTecnico it
+            WHERE it.incidencia.id = :idIncidencia
+            AND it.tecnico.id = :idTecnico
+            AND it.tecnicoResponsable IS TRUE
+            """)
+    Optional<IncidenciaTecnico> findByIdIncidenciaAndIdTecnicoResponsable(Long idIncidencia, Long idTecnico);
 }

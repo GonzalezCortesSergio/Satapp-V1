@@ -130,4 +130,25 @@ public class GlobalErrorController extends ResponseEntityExceptionHandler {
         return detail;
     }
 
+    @ExceptionHandler(TecnicoNoRelacionadoException.class)
+    public ProblemDetail handleTecnicoNoRelacionadoException(TecnicoNoRelacionadoException exception) {
+
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,
+                exception.getMessage());
+
+        detail.setTitle("Técnico no encontrado");
+
+        return detail;
+    }
+
+    @ExceptionHandler(TecnicoNoResponsableException.class)
+    public ProblemDetail handleTecnicoNoResponsableException(TecnicoNoResponsableException exception) {
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+                exception.getMessage());
+
+        detail.setTitle("Técnico no responsable");
+
+        return detail;
+    }
+
 }
