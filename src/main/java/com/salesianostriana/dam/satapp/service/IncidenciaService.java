@@ -202,9 +202,8 @@ public class IncidenciaService {
         incidencia.setUsuario(usuarioRepository.findById(idUsuario).orElseThrow(() -> new UsuarioNotFoundException(idUsuario)));
         incidencia.setCategoria(categoriaRepository.findByNombre(categoria).orElseThrow(() -> new CategoriaNotFoundException(categoria)));
         incidencia.setUbicacion(ubicacionRepository.findByNombre(ubicacion).orElseThrow(UbicacionNotFoundException::new));
-        if(idEquipo > 0) {
-            incidencia.setEquipo(equipoRepository.findById(idEquipo).orElseThrow(() -> new EquipoNotFoundException(idEquipo)));
-        }
+        incidencia.setEquipo(equipoRepository.findById(idEquipo).orElse(null));
+
 
         incidencia.setFecha(LocalDate.now());
         incidencia.setEstado(Estado.ABIERTA);
