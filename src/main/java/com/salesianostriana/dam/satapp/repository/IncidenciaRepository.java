@@ -68,7 +68,7 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
     @Query("""
             SELECT i
             FROM Incidencia i
-            WHERE i.categoria.nombre = :nombreCategoria
+            WHERE upper(i.categoria.nombre) = upper(:nombreCategoria)
             ORDER BY i.urgencia DESC
             """)
     List<Incidencia> findAllByCategoriaNombre(String nombreCategoria);
@@ -86,7 +86,7 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
     @Query("""
             SELECT i
             FROM Incidencia i
-            WHERE i.ubicacion.nombre = :nombreUbicacion
+            WHERE upper(i.ubicacion.nombre) = upper(:nombreUbicacion)
             ORDER BY i.urgencia DESC
             """)
     List<Incidencia> findAllByUbicacion(String nombreUbicacion);

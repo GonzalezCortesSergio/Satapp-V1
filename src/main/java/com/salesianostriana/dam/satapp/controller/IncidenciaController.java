@@ -3,6 +3,7 @@ package com.salesianostriana.dam.satapp.controller;
 import com.salesianostriana.dam.satapp.dto.*;
 import com.salesianostriana.dam.satapp.service.IncidenciaService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +28,7 @@ public class IncidenciaController {
     private final IncidenciaService incidenciaService;
 
 
-    @GetMapping("/admin/{idAdmin}")
+
     @Operation(summary = "Se buscan todas las incidencias que se encuentran",
     description = """
             El método tiene un parámetro de petición llamado filtro, cuyo valor predeterminado es 'no'. En caso de querer filtrar por nombre de categoría,\
@@ -119,7 +121,20 @@ public class IncidenciaController {
                     )
             }
     )
-    public GetIncidenciaListDto findAll(@PathVariable Long idAdmin, @RequestParam(required = false, defaultValue = "no") String filtro, @RequestParam(required = false) boolean ordenarFecha) {
+    @GetMapping("/admin/{idAdmin}")
+    public GetIncidenciaListDto findAll(@PathVariable Long idAdmin,
+                                        @Parameter(
+                                                description = "Posible valor para el filtro",
+                                                schema = @Schema(type = "string"),
+                                                example = "categoria-ordenadores"
+                                        )
+                                        @RequestParam(required = false, defaultValue = "no") String filtro,
+                                        @Parameter(
+                                                description = "Posible valor para el ordenarFecha",
+                                                schema = @Schema(type = "boolean"),
+                                                example = "false"
+                                        )
+                                        @RequestParam(required = false) boolean ordenarFecha) {
 
         return GetIncidenciaListDto.of(incidenciaService.findAll(idAdmin, filtro, ordenarFecha));
     }
