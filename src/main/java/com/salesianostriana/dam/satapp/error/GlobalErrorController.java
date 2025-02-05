@@ -120,4 +120,14 @@ public class GlobalErrorController extends ResponseEntityExceptionHandler {
         return detail;
     }
 
+    @ExceptionHandler(IncidenciaTecnicoExistsException.class)
+    public ProblemDetail handleIncidenciaTecnicoExistsException(IncidenciaTecnicoExistsException exception) {
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+                exception.getMessage());
+
+        detail.setTitle("No se puede seleccionar esta incidencia");
+
+        return detail;
+    }
+
 }

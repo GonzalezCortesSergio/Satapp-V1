@@ -15,7 +15,6 @@ import java.util.Objects;
 public class IncidenciaTecnico {
 
     @EmbeddedId
-    @Builder.Default
     private IncidenciaTecnicoPK incidenciaTecnicoPK = new IncidenciaTecnicoPK();
 
     @ManyToOne
