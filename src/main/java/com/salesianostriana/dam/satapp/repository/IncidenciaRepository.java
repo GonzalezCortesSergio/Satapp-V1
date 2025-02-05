@@ -47,4 +47,20 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
             AND i.estado != 'CERRADA'
             """)
     Optional<Incidencia> findByUsuarioAndIdNotCerrada(Long idUsuario, Long idIncidencia);
+
+
+    @Query("""
+            SELECT i
+            FROM Incidencia i
+            ORDER BY i.urgencia DESC
+            """)
+    List<Incidencia> findAll();
+
+
+    @Query("""
+            SELECT i
+            FROM Incidencia i
+            ORDER BY i.urgencia DESC, i.fecha DESC
+            """)
+    List<Incidencia> findAllOrderByFecha();
 }
