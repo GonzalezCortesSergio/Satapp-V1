@@ -25,7 +25,124 @@ public class IncidenciaController {
 
     private final IncidenciaService incidenciaService;
 
-
+    
+    @Operation(summary = "Un técnico puede ver la lista de incidencias no cerradas y las puede " +
+            "filtar por categoría",
+            description = "El método tiene un parámetro de petición llamado nombreCategoria. Si se quiere filtrar " +
+                    "por alguna de las categorías se debera indicar")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No hay ninguna incidencia",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                    {
+                                                                         "type": "about:blank",
+                                                                         "title": "Incidencia no encontrada",
+                                                                         "status": 404,
+                                                                         "detail": "No se han encontrado incidencias",
+                                                                         "instance": "/api/incidencia/tecnico/2/categoria"
+                                                                    }
+                                                                   """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "El usuario no tiene permiso para ver las incidencias",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                    {
+                                                                         "type": "about:blank",
+                                                                         "title": "Tecnico permiso no concedido",
+                                                                         "status": 401,
+                                                                         "detail": "El usuario debe de ser un técnico para acceder",
+                                                                         "instance": "/api/incidencia/tecnico/1/categoria"
+                                                                     }
+                                                                   """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "El técnico puede acceder a todas las incidencias filtradas",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetIncidenciaListDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                    {
+                                                                         "count": 1,
+                                                                         "results": [
+                                                                             {
+                                                                                 "id": 1,
+                                                                                 "titulo": "Ordenador ardiendo",
+                                                                                 "descripcion": "No sé, el ordenador está ardiendo socorro ayuda ya porfavor",
+                                                                                 "urgencia": 5
+                                                                             }
+                                                                         ]
+                                                                     }
+                                                                   """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "El técnico puede acceder a todas las incidencias",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetIncidenciaListDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                    {
+                                                                         "count": 1,
+                                                                         "results": [
+                                                                             {
+                                                                                 "id": 1,
+                                                                                 "titulo": "Ordenador ardiendo",
+                                                                                 "descripcion": "No sé, el ordenador está ardiendo socorro ayuda ya porfavor",
+                                                                                 "urgencia": 5
+                                                                             }
+                                                                         ]
+                                                                     }
+                                                                   """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    @GetMapping("/tecnico/{idTecnico}/categoria")
+    public GetIncidenciaListDto findIncidenciasNoCerradas(
+            @Parameter(
+                    description = "valor para filtrar por categoria",
+                    schema = @Schema(type = "string")
+            )
+            @RequestParam(required = false, defaultValue = "no") String nombreCategoria, @PathVariable Long idTecnico){
+        return GetIncidenciaListDto.of(incidenciaService.findAllTecnico(nombreCategoria, idTecnico));
+    }
 
     @Operation(summary = "Se buscan todas las incidencias que se encuentran",
     description = """
