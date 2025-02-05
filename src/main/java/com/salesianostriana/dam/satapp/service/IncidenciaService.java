@@ -8,6 +8,11 @@ import com.salesianostriana.dam.satapp.model.Estado;
 import com.salesianostriana.dam.satapp.model.Incidencia;
 import com.salesianostriana.dam.satapp.model.Nota;
 import com.salesianostriana.dam.satapp.repository.*;
+import com.salesianostriana.dam.satapp.error.*;
+import com.salesianostriana.dam.satapp.model.*;
+import com.salesianostriana.dam.satapp.repository.IncidenciaRepository;
+import com.salesianostriana.dam.satapp.repository.IncidenciaTecnicoRepository;
+import com.salesianostriana.dam.satapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +31,7 @@ public class IncidenciaService {
     private final CategoriaRepository categoriaRepository;
     private final UbicacionRepository ubicacionRepository;
     private final EquipoRepository equipoRepository;
+    private final IncidenciaTecnicoRepository incidenciaTecnicoRepository;
 
     public List<Incidencia> findAllByUsuario(Long idUsuario) {
 
@@ -211,4 +217,83 @@ public class IncidenciaService {
         return incidenciaRepository.save(incidencia);
 
     }
+
+    @Transactional
+    public Incidencia seleccionarIncidencia(Long idTecnico, Long idIncidencia) {
+
+        Tecnico tecnico = usuarioRepository.findByIdTecnico(idTecnico)
+                .orElseThrow(() -> new TecnicoPermisoDenegadoException());
+
+        if (incidenciaTecnicoRepository.findByIdIncidenciaAndIdTecnico(idIncidencia, idTecnico).isPresent())
+            throw new IncidenciaTecnicoExistsException(idTecnico, idIncidencia);
+
+        Incidencia incidencia = incidenciaRepository.findById(idIncidencia)
+                .orElseThrow(() -> new IncidenciaNotFoundException(idIncidencia));
+
+
+        IncidenciaTecnico it = new IncidenciaTecnico();
+
+        it.addToIncidencia(incidencia);
+        it.addToTecnico(tecnico);
+
+        if(incidenciaTecnicoRepository.findByIdIncidenciaTecnicoResponsable(idIncidencia).isEmpty())
+            it.setTecnicoResponsable(true);
+
+
+        incidenciaTecnicoRepository.save(it);
+
+        return incidencia;
+    }
+
+    public List<Incidencia> findAllByTecnico(Long idTecnico) {
+
+        List<Incidencia> result = incidenciaRepository.findAllByTecnicoGestiona(idTecnico);
+
+        if(result.isEmpty())
+            throw new IncidenciaNotFoundException();
+
+        return result;
+    }
+
+    public Incidencia findByIdAdmin(Long idAdmin, Long idIncidencia) {
+
+        if(usuarioRepository.findByIdPas(idAdmin).isEmpty())
+            throw new PasPermisoDenegadoException(idAdmin);
+
+        return incidenciaRepository.findByIdFetch(idIncidencia)
+                .orElseThrow(() -> new IncidenciaNotFoundException(idIncidencia));
+    }
+
+    @Transactional
+    public Incidencia cambiarEstado(Long idTecnico, Long idIncidencia, String estado) {
+
+        if (usuarioRepository.findByIdTecnico(idTecnico).isEmpty()){
+            throw new TecnicoPermisoDenegadoException();
+        }
+
+        Incidencia incidencia = incidenciaRepository.findByIncidenciaAndTecnico(idIncidencia, idTecnico)
+                .orElseThrow(() -> new IncidenciaNotFoundException());
+
+        switch (estado){
+            case "pendiente":
+                    incidencia.setEstado(Estado.PENDIENTE);
+                    break;
+
+            case "trabajando":
+                incidencia.setEstado(Estado.TRABAJANDO);
+                break;
+
+            case "cerrada":
+                incidencia.setEstado(Estado.CERRADA);
+                break;
+
+            default:
+                return incidencia;
+
+        }
+
+        return incidenciaRepository.save(incidencia);
+
+    }
+
 }

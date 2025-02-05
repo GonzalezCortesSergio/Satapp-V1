@@ -108,4 +108,46 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
             ORDER BY i.urgencia DESC
             """)
     List<Incidencia> findAllByUbicacion(String nombreUbicacion);
+
+    @Query("""
+            select i
+            from Incidencia i
+            where i.estado != 'CERRADA'
+            and i.id = :idIncidencia
+            """)
+    Optional<Incidencia> findByIdNoCerrada(Long idIncidencia);
+
+    @Query("""
+            SELECT i
+            FROM Incidencia i
+            WHERE EXISTS (
+                    SELECT it.incidencia
+                    FROM IncidenciaTecnico it
+                    WHERE it.tecnico.id = :idTecnico
+            )
+            """)
+    List<Incidencia> findAllByTecnicoGestiona(Long idTecnico);
+
+    @Query("""
+            SELECT i
+            FROM Incidencia i
+            LEFT JOIN fetch i.tecnicosGestionan
+            WHERE i.id = :idIncidencia
+            """)
+    Optional<Incidencia> findByIdFetch(Long idIncidencia);
+
+    @Query("""
+            select i
+            from Incidencia i
+            where EXISTS (
+                    select it.incidencia
+                    from IncidenciaTecnico it
+                    where it.tecnico.id = :idTecnico
+                    and it.incidencia.id = :idIncidencia
+                    and it.tecnicoResponsable IS TRUE
+            )
+            and i.estado != 'CERRADA'
+            """)
+    Optional<Incidencia> findByIncidenciaAndTecnico(Long idIncidencia, Long idTecnico);
+
 }

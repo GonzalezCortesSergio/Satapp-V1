@@ -34,17 +34,10 @@ public class Incidencia {
     @Column(scale = 1)
     private int urgencia;
 
-    @ManyToMany
-    @JoinTable(
-            name = "incidencia_tecnico",
-            joinColumns = @JoinColumn(name = "incidencia_id"),
-            inverseJoinColumns = @JoinColumn(name = "tecnico_id"),
-            foreignKey = @ForeignKey(name = "fk_incidencia_tecnico_incidencia"),
-            inverseForeignKey = @ForeignKey(name = "fk_incidencia_tecnico_tecnico")
-    )
+    @OneToMany(mappedBy = "incidencia", fetch = FetchType.LAZY)
     @Builder.Default
     @Setter(AccessLevel.NONE)
-    private Set<Tecnico> tecnicosGestionan = new HashSet<>();
+    private Set<IncidenciaTecnico> tecnicosGestionan = new HashSet<>();
 
     @ManyToOne
     private Usuario usuario;

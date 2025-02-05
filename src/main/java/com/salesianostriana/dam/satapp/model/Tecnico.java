@@ -1,9 +1,6 @@
 package com.salesianostriana.dam.satapp.model;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -20,8 +17,8 @@ import java.util.Set;
 @DiscriminatorValue(value = "tecnico")
 public class Tecnico extends Usuario{
 
-    @ManyToMany(mappedBy = "tecnicosGestionan", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tecnico", fetch = FetchType.LAZY)
     @Builder.Default
     @Setter(AccessLevel.NONE)
-    private Set<Incidencia> incidenciasGestiona = new HashSet<>();
+    private Set<IncidenciaTecnico> incidenciasGestiona = new HashSet<>();
 }
