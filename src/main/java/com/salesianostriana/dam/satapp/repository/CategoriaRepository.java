@@ -19,7 +19,7 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
     @Modifying
     @Query("""
             update Categoria c
-            set c.deleted = false
+            set c.deleted = true
             where upper(c.nombre) = upper(:nombre)
             """)
     void deleteByNombre(String nombre);

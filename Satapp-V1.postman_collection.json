@@ -58,7 +58,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/usuario/admin/1/editar/3",
+							"raw": "http://localhost:8080/api/usuario/admin/1/editar/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -70,7 +70,7 @@
 								"admin",
 								"1",
 								"editar",
-								"3"
+								"2"
 							]
 						}
 					},
@@ -101,12 +101,21 @@
 					"response": []
 				},
 				{
-					"name": "Borrar usuario",
+					"name": "Añadir Historico",
 					"request": {
-						"method": "DELETE",
+						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"curso\": \"1ºDAM\",\r\n    \"cursoEscolar\": \"2024/2025\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://localhost:8080/api/usuario/admin/2/delete/2",
+							"raw": "http://localhost:8080/api/usuario/admin/1/aniadirhistoricocurso/4",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -116,67 +125,21 @@
 								"api",
 								"usuario",
 								"admin",
-								"2",
-								"delete",
-								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Añadir Historico",
-					"request": {
-						"method": "GET",
-						"header": []
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Incidencias",
-			"item": [
-				{
-					"name": "Editar descripción de incidencia por Usuario",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"descripcion\": \"Estaba fumando y tiré una colilla al ordenador pensando que no ardería y salió ardiendo, socorro\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/incidencia/usuario/1/editar/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"incidencia",
-								"usuario",
 								"1",
-								"editar",
-								"1"
+								"aniadirhistoricocurso",
+								"4"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Borrar Incidencia abierta",
+					"name": "Borrar usuario",
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/incidencia/usuario/1/borrar/1",
+							"raw": "http://localhost:8080/api/usuario/admin/1/delete/4",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -184,57 +147,11 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"incidencia",
 								"usuario",
+								"admin",
 								"1",
-								"borrar",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Ver detalles Incidencia por Usuario",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/incidencia/usuario/1/detalles/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"incidencia",
-								"usuario",
-								"1",
-								"detalles",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Buscar Incidencias por usuario",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/incidencia/usuario/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"incidencia",
-								"usuario",
-								"1"
+								"delete",
+								"4"
 							]
 						}
 					},
@@ -298,7 +215,7 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "Editar equipo",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -312,7 +229,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/equipo/admin/1/edit/2",
+							"raw": "http://localhost:8080/api/equipo/admin/1/edit/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -324,7 +241,610 @@
 								"admin",
 								"1",
 								"edit",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cambiar Ubicacion Equipo",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/equipo/admin/1/cambiar/1/ubicacion/Aula 1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"equipo",
+								"admin",
+								"1",
+								"cambiar",
+								"1",
+								"ubicacion",
+								"Aula 1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Borrar equipo",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/equipo/admin/1/delete/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"equipo",
+								"admin",
+								"1",
+								"delete",
 								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ubicacion",
+			"item": [
+				{
+					"name": "Crear Ubicación",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/ubicacion/admin/1/crear/2º DAM",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"ubicacion",
+								"admin",
+								"1",
+								"crear",
+								"2º DAM"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver ubicaciones",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/ubicacion",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"ubicacion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Borrar Ubicación",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/ubicacion/admin/1/delete/Aula 1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"ubicacion",
+								"admin",
+								"1",
+								"delete",
+								"Aula 1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categorias",
+			"item": [
+				{
+					"name": "CrearCategoria",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/categoria/admin/1/crear/noseapaga",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"categoria",
+								"admin",
+								"1",
+								"crear",
+								"noseapaga"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear categoria hija",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/categoria/admin/1/crear/noseapaga/noreinicia",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"categoria",
+								"admin",
+								"1",
+								"crear",
+								"noseapaga",
+								"noreinicia"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver categorias",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/categoria",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"categoria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Borrar Categoria",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/categoria/admin/1/delete/noseapaga",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"categoria",
+								"admin",
+								"1",
+								"delete",
+								"noseapaga"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Incidencias",
+			"item": [
+				{
+					"name": "Crear Incidencia",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"titulo\": \"Boquete pared\",\r\n  \"descripcion\": \"Un nota ha hecho un boquete en la pared, arreglarlo porfa\",\r\n  \"urgencia\": 3  \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/usuario/1/crearIncidencia/categoria/ordenadores/equipo/-1/ubicacion/Aula 1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"usuario",
+								"1",
+								"crearIncidencia",
+								"categoria",
+								"ordenadores",
+								"equipo",
+								"-1",
+								"ubicacion",
+								"Aula 1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver detalles Incidencia por Usuario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/usuario/1/detalles/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"usuario",
+								"1",
+								"detalles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar descripción de incidencia por Usuario",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion\": \"Estaba fumando y tiré una colilla al ordenador pensando que no ardería y salió ardiendo, socorro\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/usuario/1/editar/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"usuario",
+								"1",
+								"editar",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Incidencias por usuario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/usuario/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"usuario",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agregar nota",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"contenido\": \"Ha dejado de arder, pero está todo chamuscao\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/1/usuario/1/addNota",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"1",
+								"usuario",
+								"1",
+								"addNota"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Borrar nota",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/1/usuario/1/borrarnota/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"1",
+								"usuario",
+								"1",
+								"borrarnota",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Borrar Incidencia abierta",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/usuario/1/borrar/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"usuario",
+								"1",
+								"borrar",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver incidencias tecnico",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/tecnico/2/categoria",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"tecnico",
+								"2",
+								"categoria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Seleccionar Incidencia",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/tecnico/2/seleccionar/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"tecnico",
+								"2",
+								"seleccionar",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver incidencias admin",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/admin/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"admin",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver detalles incidencia con técnicos que la gestionan",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/admin/1/detalles/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"admin",
+								"1",
+								"detalles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver incidencias gestiona técnico",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/tecnico/2/verGestionadas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"tecnico",
+								"2",
+								"verGestionadas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cambiar estado",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/tecnico/2/incidencia/1/pendiente",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"tecnico",
+								"2",
+								"incidencia",
+								"1",
+								"pendiente"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cambiar de técnico responsable",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/incidencia/1/tecnicoResponsable/2/cambiar/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"incidencia",
+								"1",
+								"tecnicoResponsable",
+								"2",
+								"cambiar",
+								"3"
 							]
 						}
 					},

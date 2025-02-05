@@ -228,6 +228,7 @@ public class IncidenciaService {
         Incidencia incidencia = incidenciaRepository.findById(idIncidencia)
                 .orElseThrow(() -> new IncidenciaNotFoundException(idIncidencia));
 
+        incidencia.setEstado(Estado.TRABAJANDO);
 
         IncidenciaTecnico it = new IncidenciaTecnico();
 
@@ -239,6 +240,7 @@ public class IncidenciaService {
 
 
         incidenciaTecnicoRepository.save(it);
+
 
         return incidencia;
     }
