@@ -146,6 +146,7 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
                     and it.incidencia.id = :idIncidencia
                     and it.tecnicoResponsable IS TRUE
             )
+            and i.estado != 'CERRADA'
             """)
     Optional<Incidencia> findByIncidenciaAndTecnico(Long idIncidencia, Long idTecnico);
 
