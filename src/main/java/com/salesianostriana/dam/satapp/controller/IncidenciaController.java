@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.satapp.controller;
 
 import com.salesianostriana.dam.satapp.dto.*;
+import com.salesianostriana.dam.satapp.model.Incidencia;
 import com.salesianostriana.dam.satapp.service.IncidenciaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -398,12 +399,48 @@ public class IncidenciaController {
         return GetIncidenciaDetailsDto.of(incidenciaService.addNota(idUsuario, idIncidencia, notaDto));
     }
 
-    @DeleteMapping("/{idIncidencia}/delete/{idNota}/nota")
+    @PutMapping("/{idIncidencia}/usuario/{idUsuario}/borrarnota/{idNota}")
     @Operation(summary = "Se borra una nota a una incidencia que no está cerrada")
-    public void eliminarNota(@PathVariable Long idUsuario, @PathVariable Long idIncidencia,
-                             @PathVariable Long idNota) {
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Se borra correctamente la nota de la incidencia",
+                            content = {
+                                    @Content(
 
-        incidenciaService.eliminarNota(idUsuario, idIncidencia, idNota);
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "El usuario no tiene permiso para borrar la nota",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                    {
+                                                                         "type": "about:blank",
+                                                                         "title": "Incidencia no encontrada",
+                                                                         "status": 404,
+                                                                         "detail": "No se ha encontrado una incidencia con el ID: 1 para el usuario con ID: 2",
+                                                                         "instance": "/api/incidencia/1/usuario/2/borrarnota/1"
+                                                                    }
+                                                                   """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    public GetIncidenciaDetailsDto eliminarNota(@PathVariable Long idUsuario, @PathVariable Long idIncidencia,
+                                   @PathVariable Long idNota) {
+
+        return GetIncidenciaDetailsDto.of(incidenciaService.eliminarNota(idUsuario, idIncidencia, idNota));
     }
 
 }
