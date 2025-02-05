@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -701,6 +702,148 @@ public class IncidenciaController {
                                    @PathVariable Long idNota) {
 
         return GetIncidenciaDetailsDto.of(incidenciaService.eliminarNota(idUsuario, idIncidencia, idNota));
+    }
+
+    @Operation(summary = "Se registra una incidencia nueva",
+    description = """
+            Para registrar una incidencia nueva se deberá incluir el id del usuario que vaya a
+            registrar la incidencia, el nombre de la categoría que se le va a asignar, el id del equipo
+            al que irá relacionada (en el caso de no estar relacionada a un equipo se le pasará como id
+            -1) y por último el nombre de la ubicación en la que se situará.
+            """)
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Se ha registrado la incidencia correctamente",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetIncidenciaDetailsDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "fecha": "2025-02-05",
+                                                                            "titulo": "Boquete pared",
+                                                                            "descripcion": "Un nota ha hecho un boquete en la pared, arreglarlo porfa",
+                                                                            "estado": "ABIERTA",
+                                                                            "urgencia": 3,
+                                                                            "categoria": "Ordenadores",
+                                                                            "notas": [],
+                                                                            "equipo": null,
+                                                                            "ubicacion": {
+                                                                                "id": 1,
+                                                                                "nombre": "Aula 1",
+                                                                                "deleted": false
+                                                                            }
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se ha encontrado el usuario para registrar la incidencia",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Usuario no encontrado",
+                                                                            "status": 404,
+                                                                            "detail": "No se ha encontrado un usuario con el ID: 3",
+                                                                            "instance": "/api/incidencia/usuario/3/crearIncidencia/categoria/ordenadores/equipo/-1/ubicacion/Aula%201"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se ha encontrado la categoría a la que añadir",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Categoria no encontrada",
+                                                                            "status": 404,
+                                                                            "detail": "No se ha encontrado la categoria inexistente",
+                                                                            "instance": "/api/incidencia/usuario/2/crearIncidencia/categoria/inexistente/equipo/-1/ubicacion/Aula%201"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se ha encontrado la ubicación de la incidencia",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Ubicación no encontrada",
+                                                                            "status": 404,
+                                                                            "detail": "No se han encontrado ubicaciones",
+                                                                            "instance": "/api/incidencia/usuario/1/crearIncidencia/categoria/ordenadores/equipo/-1/ubicacion/Aula%202"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
+    @PostMapping("/usuario/{idUsuario}/crearIncidencia/categoria/{categoria}/equipo/{idEquipo}/ubicacion/{ubicacion}")
+    public ResponseEntity<GetIncidenciaDetailsDto> crearIncidencia(@PathVariable Long idUsuario, @PathVariable String categoria,
+                                                   @PathVariable Long idEquipo, @PathVariable String ubicacion,
+                                                   @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                           description = "Datos de la incidencia a crear",
+                                                           required = true,
+                                                           content = {
+                                                                   @Content(
+                                                                           mediaType = "application/json",
+                                                                           schema = @Schema(implementation = CreateIncidenciaDto.class),
+                                                                           examples = {
+                                                                                   @ExampleObject(
+                                                                                           value = """
+                                                                                                    {
+                                                                                                      "titulo": "Boquete pared",
+                                                                                                      "descripcion": "Un nota ha hecho un boquete en la pared, arreglarlo porfa",
+                                                                                                      "urgencia": 3
+                                                                                                    }
+                                                                                                   """
+                                                                                   )
+                                                                           }
+                                                                   )
+                                                           }
+                                                   )
+                                                                   @RequestBody CreateIncidenciaDto incidenciaDto) {
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                GetIncidenciaDetailsDto.of(incidenciaService.save(idUsuario, incidenciaDto, categoria, idEquipo, ubicacion))
+        );
     }
 
 }
