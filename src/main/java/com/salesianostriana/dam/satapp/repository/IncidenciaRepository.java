@@ -120,14 +120,11 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
     @Query("""
             SELECT i
             FROM Incidencia i
-            WHERE i IN (
+            WHERE EXISTS (
                     SELECT it.incidencia
                     FROM IncidenciaTecnico it
-                    JOIN it.incidencia
-                    JOIN it.tecnico
                     WHERE it.tecnico.id = :idTecnico
             )
-            AND i.estado != 'CERRADA'
             """)
     List<Incidencia> findAllByTecnicoGestiona(Long idTecnico);
 }

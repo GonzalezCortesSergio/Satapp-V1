@@ -145,8 +145,70 @@ public class IncidenciaController {
         return GetIncidenciaListDto.of(incidenciaService.findAllTecnico(nombreCategoria, idTecnico));
     }
 
+
+    @Operation(summary = "Se ven las incidencias que gestiona un técnico")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "El técnico ve las incidencias que gestiona correctamente",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = GetIncidenciaListDto.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "count": 2,
+                                                                            "results": [
+                                                                                {
+                                                                                    "id": 1,
+                                                                                    "titulo": "Ordenador ardiendo",
+                                                                                    "descripcion": "No sÃ©, el ordenador estÃ¡ ardiendo socorro ayuda ya porfavor",
+                                                                                    "urgencia": 5
+                                                                                },
+                                                                                {
+                                                                                    "id": 2,
+                                                                                    "titulo": "Boquete pared",
+                                                                                    "descripcion": "Un nota ha hecho un boquete en la pared, arreglarlo porfa",
+                                                                                    "urgencia": 3
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No se han encontrado incidencias relacionadas",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ProblemDetail.class),
+                                            examples = {
+                                                    @ExampleObject(
+                                                            value = """
+                                                                        {
+                                                                            "type": "about:blank",
+                                                                            "title": "Incidencia no encontrada",
+                                                                            "status": 404,
+                                                                            "detail": "No se han encontrado incidencias",
+                                                                            "instance": "/api/incidencia/tecnico/1/verGestionadas"
+                                                                        }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    )
+            }
+    )
     @GetMapping("/tecnico/{idTecnico}/verGestionadas")
-    public GetIncidenciaListDto findAllByTecnico(Long idTecnico) {
+    public GetIncidenciaListDto findAllByTecnico(@PathVariable Long idTecnico) {
 
         return GetIncidenciaListDto.of(incidenciaService.findAllByTecnico(idTecnico));
     }
