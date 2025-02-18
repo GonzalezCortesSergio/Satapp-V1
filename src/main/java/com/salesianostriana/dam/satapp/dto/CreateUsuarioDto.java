@@ -3,9 +3,11 @@ package com.salesianostriana.dam.satapp.dto;
 import com.salesianostriana.dam.satapp.model.Alumno;
 import com.salesianostriana.dam.satapp.model.Personal;
 import com.salesianostriana.dam.satapp.model.Tecnico;
+import jakarta.validation.constraints.NotBlank;
 
 public record CreateUsuarioDto(
         String nombre,
+        @NotBlank
         String username,
         String password,
         String email,

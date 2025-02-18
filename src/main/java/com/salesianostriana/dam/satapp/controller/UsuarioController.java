@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -135,7 +136,7 @@ public class UsuarioController {
                                                                )
                                                        }
                                                )
-                                               @RequestBody CreateUsuarioDto createUsuarioDto,
+                                               @RequestBody @Valid CreateUsuarioDto createUsuarioDto,
                                                @PathVariable String tipoUsuario,
                                                @Parameter(
                                                        description = "valor necesario para elegir el tipo del personal a crear",
